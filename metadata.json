@@ -1,0 +1,7 @@
+{
+  "name": "Sparify Final",
+  "description": "Digitally manage and connect your physical piggy banks with real-time tracking and goals.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
