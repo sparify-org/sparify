@@ -8,7 +8,7 @@ import { BottomNav } from './components/BottomNav';
 import { Sidebar } from './components/Sidebar';
 import { QRScanner } from './components/QRScanner';
 import { PiggyDetailScreen } from './components/PiggyDetailScreen';
-import { LearnScreen } from './components/LearnScreen';
+import LearnScreen from './components/LearnScreen';
 import { ShopScreen } from './components/ShopScreen';
 import { Trophy, Loader2, RotateCcw, AlertTriangle, RefreshCw, PiggyBank as PigIcon, HelpCircle, BookOpen, Smartphone, Baby, Briefcase } from 'lucide-react';
 import { supabase } from './lib/supabaseClient';

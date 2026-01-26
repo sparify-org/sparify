@@ -418,3 +418,5 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ language, accentColor,
     </div>
   );
 };
+
+export default LearnScreen;
