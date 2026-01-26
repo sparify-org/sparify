@@ -32,6 +32,8 @@ export default function App() {
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const [isLevelActive, setIsLevelActive] = useState(false);
   const [showHelpMenu, setShowHelpMenu] = useState(false);
+    const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+    const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [showAgeSelection, setShowAgeSelection] = useState(false);
   const [selectedAge, setSelectedAge] = useState(14);
 
@@ -66,7 +68,7 @@ export default function App() {
   }, [userId, user?.email]);
 
   useEffect(() => {
-    let mounted = true;
+        let mounted = true;
 
     const timeout = setTimeout(() => {
         if (loading && mounted && !dataLoadedRef.current) {
@@ -178,6 +180,25 @@ export default function App() {
     };
   }, []); 
 
+    // PWA install prompt handling
+    useEffect(() => {
+        const handler = (e: any) => {
+            e.preventDefault();
+            setDeferredPrompt(e);
+            setShowInstallPrompt(true);
+        };
+        const installed = () => {
+            setDeferredPrompt(null);
+            setShowInstallPrompt(false);
+        };
+        window.addEventListener('beforeinstallprompt', handler as EventListener);
+        window.addEventListener('appinstalled', installed as EventListener);
+        return () => {
+            window.removeEventListener('beforeinstallprompt', handler as EventListener);
+            window.removeEventListener('appinstalled', installed as EventListener);
+        };
+    }, []);
+
   const loadUserData = async (uid: string, email: string, showLoadingSpinner = true) => {
     if (showLoadingSpinner) setLoading(true);
     else setIsSyncing(true);
@@ -200,8 +221,8 @@ export default function App() {
             const localUnseenRaw = localStorage.getItem(`sparify_unseen_${uid}`);
             const localUnseen = localUnseenRaw ? JSON.parse(localUnseenRaw) : [];
 
-            setUser({
-                name: p.name || 'SparFuchs',
+                setUser({
+                name: p.name || 'Sparify',
                 email: p.email || email,
                 avatarId: p.avatar_id || 0,
                 trophies: p.trophies || 0,
@@ -617,6 +638,20 @@ export default function App() {
                         {tAge.confirm}
                     </button>
                 </div>
+            </div>
+        )}
+        {showInstallPrompt && deferredPrompt && (
+            <div className="fixed bottom-6 right-6 z-[300]">
+                <button onClick={async () => {
+                    try {
+                        setShowInstallPrompt(false);
+                        await deferredPrompt.prompt();
+                        const choiceResult = await deferredPrompt.userChoice;
+                        setDeferredPrompt(null);
+                    } catch (e) {
+                        console.warn('PWA install prompt error', e);
+                    }
+                }} className="bg-orange-500 text-white px-4 py-3 rounded-2xl shadow-lg font-bold">App installieren</button>
             </div>
         )}
     </div>

@@ -3,9 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SparFuchs Connect</title>
+    <title>Sparify</title>
+    <meta name="theme-color" content="#f97316" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Sparify" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="https://bejlqwebcujfklavoecm.supabase.co/storage/v1/object/public/Logo/SparifyLogo.png">
 
-    <!-- Tailwind CDN (warning можно игнорировать) -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
@@ -24,7 +30,6 @@
       }
     </style>
 
-    <!-- importmap можно оставить -->
     <script type="importmap">
       {
         "imports": {
@@ -43,7 +48,7 @@
   <body>
     <div id="root"></div>
 
-    <!-- ВАЖНО: entry-файл Vite -->
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- 👇 ВАЖНО: относительный путь -->
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>
