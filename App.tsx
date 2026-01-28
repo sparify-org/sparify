@@ -401,6 +401,11 @@ export default function App() {
         if (error) throw error;
         return { success: true };
       }}
+      onResetPassword={async (email) => {
+        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        if (error) throw error;
+        return { success: true };
+      }}
       language={language}
       accentColor={accentColor}
     />

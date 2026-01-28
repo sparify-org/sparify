@@ -40,7 +40,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onResetPasswo
         if (result && result.success && result.needsVerification) {
             setVerificationSent(true);
             setLoading(false);
+            return;
         }
+        // Success (login or register with immediate session) — UI will navigate via auth state,
+        // but we must still clear local loading state to avoid getting stuck.
+        setLoading(false);
     } catch (err: any) {
         console.error(err);
         setErrorMsg(isResetMode ? (getTranslations(language)?.login?.resetError || "Fehler beim Senden der Email.") : (getTranslations(language)?.login?.loginError || "Das hat nicht geklappt. Bitte prüfe deine Daten."));
