@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { ShoppingBag, Check, Clock, Sparkles, User, Palette, Ticket, CheckCircle2, Circle, Snowflake } from 'lucide-react';
-import { Language, TRANSLATIONS, User as UserType, ThemeColor, AVATARS, THEME_COLORS, SPECIALS_DATABASE } from '../types';
+import { Language, getTranslations, User as UserType, ThemeColor, AVATARS, THEME_COLORS, SPECIALS_DATABASE } from '../types';
 
 interface ShopScreenProps {
   user: UserType;
@@ -22,7 +22,7 @@ const sfc32 = (a: number, b: number, c: number, d: number) => {
 }
 
 export const ShopScreen: React.FC<ShopScreenProps> = ({ user, onUpdateUser, language }) => {
-  const t = TRANSLATIONS[language].shop;
+  const t = getTranslations(language).shop;
 
   const [devDateOffset, setDevDateOffset] = useState(0);
   const [applyDiscount, setApplyDiscount] = useState(false);
@@ -83,8 +83,11 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ user, onUpdateUser, lang
           price: 100
       }));
 
-      return { avatars: todaysAvatars, themes: todaysThemes, specials: SPECIALS_DATABASE };
-  }, [todayStr]);
+      const specials = user.enableShopTitles
+        ? SPECIALS_DATABASE
+        : SPECIALS_DATABASE.filter(s => s.category !== 'tag');
+      return { avatars: todaysAvatars, themes: todaysThemes, specials };
+  }, [todayStr, user.enableShopTitles]);
 
   useEffect(() => {
       const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
@@ -174,9 +177,9 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ user, onUpdateUser, lang
                       <div className="flex items-center gap-3">
                           <Ticket size={24} className={applyDiscount ? 'text-white' : 'text-orange-500'} />
                           <div>
-                              <p className="font-black text-sm uppercase leading-none">Rabatt-Gutschein verfügbar!</p>
+                              <p className="font-black text-sm uppercase leading-none">{t.couponAvailableTitle}</p>
                               <p className={`text-[10px] font-bold ${applyDiscount ? 'text-orange-100' : 'text-orange-400'}`}>
-                                  {applyDiscount ? 'Wird beim nächsten Kauf eingelöst' : 'Klicke hier, um 50% zu sparen'}
+                                  {applyDiscount ? t.couponAvailableHintOn : t.couponAvailableHintOff}
                               </p>
                           </div>
                       </div>

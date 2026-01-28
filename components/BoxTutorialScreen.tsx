@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { ChevronRight, ArrowRight, Zap, Radio, Coins, ShieldCheck, Palette, X, Sparkles, Smartphone, Usb } from 'lucide-react';
-import { Language, TRANSLATIONS, ThemeColor, THEME_COLORS } from '../types';
+import { Language, getTranslations, ThemeColor, THEME_COLORS } from '../types';
 
 interface BoxTutorialScreenProps {
   language: Language;
@@ -12,7 +12,9 @@ interface BoxTutorialScreenProps {
 
 export const BoxTutorialScreen: React.FC<BoxTutorialScreenProps> = ({ language, accentColor, onFinish, onSkip }) => {
   const [step, setStep] = useState(0);
-  const steps = TRANSLATIONS[language].boxTutorial;
+  const tr = getTranslations(language);
+  const steps = tr.boxTutorial;
+  const tCommon = tr.common;
   const isLastStep = step === steps.length - 1;
 
   const icons = [
@@ -42,7 +44,7 @@ export const BoxTutorialScreen: React.FC<BoxTutorialScreenProps> = ({ language, 
           onClick={onSkip} 
           className="text-slate-400 font-bold flex items-center gap-1 hover:text-slate-600 transition-colors"
         >
-          Skip <X size={18} />
+          {tCommon.skip} <X size={18} />
         </button>
       </div>
 
@@ -98,7 +100,7 @@ export const BoxTutorialScreen: React.FC<BoxTutorialScreenProps> = ({ language, 
           onClick={handleNext}
           className={`w-full py-5 rounded-[2rem] font-black text-xl text-white shadow-xl flex items-center justify-center gap-3 transition-all active:scale-95 ${THEME_COLORS[accentColor]}`}
         >
-          {isLastStep ? 'Starten!' : 'Weiter'}
+          {isLastStep ? tCommon.finish : tCommon.next}
           <ArrowRight size={24} strokeWidth={3} />
         </button>
       </div>

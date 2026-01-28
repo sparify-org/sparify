@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PiggyBank, Loader2, AlertCircle, Mail, ArrowRight, UserPlus, LogIn, KeyRound, ChevronLeft, Eye, EyeOff } from 'lucide-react';
-import { Language, TRANSLATIONS, LOGIN_LOGO_URL, THEME_COLORS, ThemeColor } from '../types';
+import { Language, getTranslations, LOGIN_LOGO_URL, THEME_COLORS, ThemeColor } from '../types';
 
 interface LoginScreenProps {
   onLogin: (email: string, pass: string, isRegister: boolean) => Promise<any>;
@@ -20,7 +20,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onResetPasswo
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [verificationSent, setVerificationSent] = useState(false);
   
-  const t = TRANSLATIONS[language].login;
+  const t = getTranslations(language).login;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +43,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onResetPasswo
         }
     } catch (err: any) {
         console.error(err);
-        setErrorMsg(isResetMode ? "Fehler beim Senden der Email." : "Das hat nicht geklappt. Bitte prüfe deine Daten.");
+        setErrorMsg(isResetMode ? (getTranslations(language)?.login?.resetError || "Fehler beim Senden der Email.") : (getTranslations(language)?.login?.loginError || "Das hat nicht geklappt. Bitte prüfe deine Daten."));
         setLoading(false);
     }
   };
@@ -55,17 +55,17 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onResetPasswo
                  <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 text-emerald-500 shadow-sm">
                      <Mail size={40} />
                  </div>
-                 <h2 className="text-3xl font-black text-slate-900 mb-4">Fast geschafft!</h2>
+                 <h2 className="text-3xl font-black text-slate-900 mb-4">{t.verifyTitle}</h2>
                  <div className="bg-slate-50 p-4 rounded-2xl mb-6 text-left border border-slate-100">
                      <p className="text-slate-500 font-medium text-sm mb-2">
-                         Wir haben eine E-Mail geschickt an:
+                         {t.verifySentTo}
                      </p>
                      <p className="text-slate-800 font-bold text-lg break-all">
                          {email}
                      </p>
                  </div>
                  <p className="text-slate-500 font-medium mb-8 leading-relaxed">
-                     Bitte klicke auf den Link in der E-Mail, um dein Sparschwein zu aktivieren! 🐷
+                     {t.verifyHint}
                  </p>
                  <button 
                     onClick={() => {
@@ -74,7 +74,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onResetPasswo
                     }}
                     className="w-full bg-slate-900 text-white font-black py-4 rounded-2xl shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
                  >
-                     Zum Login <ArrowRight size={18} />
+                     {t.goToLogin} <ArrowRight size={18} />
                  </button>
              </div>
         </div>
@@ -125,7 +125,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onResetPasswo
                     {t.resetTitle}
                 </>
             ) : (
-                isRegisterMode ? 'Neues Konto' : t.title
+                isRegisterMode ? t.registerTitle : t.title
             )}
         </h2>
 
@@ -220,11 +220,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin, onResetPasswo
                 >
                     {isRegisterMode ? (
                         <>
-                            <LogIn size={16} /> Ich habe schon ein Konto
+                            <LogIn size={16} /> {t.alreadyHaveAccount}
                         </>
                     ) : (
                         <>
-                            <UserPlus size={16} /> Neues Konto erstellen
+                            <UserPlus size={16} /> {t.createNewAccount}
                         </>
                     )}
                 </button>

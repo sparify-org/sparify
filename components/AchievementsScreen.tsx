@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { X, Check, Trophy, Lock, Coins, ArrowRight, Star } from 'lucide-react';
-import { Language, TRANSLATIONS, User, PiggyBank, ACHIEVEMENTS_LIST, Achievement } from '../types';
+import { Language, getTranslations, User, PiggyBank, ACHIEVEMENTS_LIST, Achievement } from '../types';
 
 interface AchievementsScreenProps {
   user: User;
@@ -12,8 +12,9 @@ interface AchievementsScreenProps {
 }
 
 export const AchievementsScreen: React.FC<AchievementsScreenProps> = ({ user, piggyBanks, onUpdateUser, onClose, language }) => {
-  const t = TRANSLATIONS[language].detail;
-  const tShop = TRANSLATIONS[language].shop;
+  const tr = getTranslations(language);
+  const t = tr.detail;
+  const tShop = tr.shop;
 
   const handleClaim = (achievement: Achievement) => {
     if (achievement.condition(user, piggyBanks) && !user.claimedAchievements.includes(achievement.id)) {

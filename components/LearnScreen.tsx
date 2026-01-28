@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Heart, Flame, Zap, Check, Lock, Play, Star, X, Coins, ArrowRight, ArrowLeft, Gamepad2, ShieldAlert, PiggyBank, Smile, Clock, Flag, Globe, ShoppingBasket, School, TrendingUp, AlertTriangle, Wallet, RotateCcw, Tag, Hourglass, Calculator, Briefcase, Percent, PieChart, Landmark, LineChart, ShieldCheck, ZapOff, Snowflake } from 'lucide-react';
-import { Language, TRANSLATIONS, ThemeColor, User, AppMode } from '../types';
+import { Language, getTranslations, ThemeColor, User, AppMode } from '../types';
 
 interface Level {
   id: string;
@@ -48,7 +48,7 @@ interface LearnScreenProps {
 }
 
 export const LearnScreen: React.FC<LearnScreenProps> = ({ language, accentColor, user, onCompleteLevel, onLevelStart, onLevelEnd, appMode = 'kids' }) => {
-  const t = TRANSLATIONS[language].learn;
+  const t = getTranslations(language).learn;
   const [selectedLevel, setSelectedLevel] = useState<Level | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);

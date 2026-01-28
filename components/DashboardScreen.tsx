@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Plus, PiggyBank as PigIcon, Eye, Lock, Megaphone, Trash2, Wallet, CreditCard, ChevronRight, TrendingUp, PieChart, ArrowUpRight, ArrowDownLeft, Snowflake, Target, Percent, Info, AlertCircle, Check } from 'lucide-react';
-import { PiggyBank, ThemeColor, THEME_COLORS, Language, TRANSLATIONS, CUSTOM_LOGO_URL, AppMode, User, Goal } from '../types';
+import { PiggyBank, ThemeColor, THEME_COLORS, Language, getTranslations, CUSTOM_LOGO_URL, AppMode, User, Goal } from '../types';
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 interface DashboardScreenProps {
@@ -33,9 +33,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
 
   const ownedPigs = piggyBanks.filter(p => p.role === 'owner');
   const guestPigs = piggyBanks.filter(p => p.role === 'guest');
-  const t = TRANSLATIONS[language].dashboard;
-  const tDetail = TRANSLATIONS[language].detail;
-  const tScanner = TRANSLATIONS[language].scanner;
+  const tr = getTranslations(language);
+  const t = tr.dashboard;
+  const tDetail = tr.detail;
+  const tScanner = tr.scanner;
 
   const aggregatedData = useMemo(() => {
     if (ownedPigs.length === 0) return [];

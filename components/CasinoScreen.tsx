@@ -1,7 +1,7 @@
 // ...existing code...
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { Language, TRANSLATIONS, User } from '../types';
+import { Language, getTranslations, User } from '../types';
 
 interface CasinoScreenProps {
   user: User;
@@ -11,7 +11,7 @@ interface CasinoScreenProps {
 }
 
 export const CasinoScreen: React.FC<CasinoScreenProps> = ({ user, onUpdateUser, onClose, language }) => {
-  const t = TRANSLATIONS[language];
+  const t = getTranslations(language);
 
   const GRID_SIZE = 5;
   const TOTAL_CELLS = GRID_SIZE * GRID_SIZE;

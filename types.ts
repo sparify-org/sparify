@@ -31,6 +31,9 @@ export interface User {
   age: number | null;
   birthdate: string | null;
   hasSeenTutorial: boolean;
+  // User preferences (stored locally; safe defaults if missing)
+  showAvatarRings: boolean;
+  enableShopTitles: boolean;
 }
 
 export interface PiggyBank {
@@ -254,13 +257,38 @@ export const THEME_COLORS: { [key in ThemeColor]: string } = {
 
 export const TRANSLATIONS: Record<Language, any> = {
   de: {
-    login: { slogan: 'Schlau sparen, Träume erfüllen.', title: 'Willkommen zurück', email: 'E-Mail', password: 'Passwort', button: 'Einloggen', registerBtn: 'Konto erstellen', forgotPassword: 'Passwort vergessen?', resetTitle: 'Passwort zurücksetzen', resetButton: 'Link senden', backToLogin: 'Zurück zum Login', resetSuccess: 'E-Mail gesendet!' },
+    login: { slogan: 'Schlau sparen, Träume erfüllen.', title: 'Willkommen zurück', email: 'E-Mail', password: 'Passwort', button: 'Einloggen', registerBtn: 'Konto erstellen', forgotPassword: 'Passwort vergessen?', resetTitle: 'Passwort zurücksetzen', resetButton: 'Link senden', backToLogin: 'Zurück zum Login', resetSuccess: 'E-Mail gesendet!', loginError: 'Das hat nicht geklappt. Bitte prüfe deine Daten.', resetError: 'Fehler beim Senden der Email.', registerTitle: 'Neues Konto', alreadyHaveAccount: 'Ich habe schon ein Konto', createNewAccount: 'Neues Konto erstellen', verifyTitle: 'Fast geschafft!', verifySentTo: 'Wir haben eine E-Mail geschickt an:', verifyHint: 'Bitte klicke auf den Link in der E-Mail, um dein Sparschwein zu aktivieren!', goToLogin: 'Zum Login' },
     age: { title: 'Fast fertig!', subtitle: 'Wann hast du Geburtstag?', hint: 'Dies hat keinen Einfluss auf die Funktionen, es passt lediglich das Design der App an dich an.', confirm: 'Los geht\'s', years: 'Jahre', birthdate: 'Geburtsdatum' },
     dashboard: { balance: 'Kontostand', newPig: 'Neues Schwein', myPigs: 'Meine Schweine', praiseMessages: ['Super!', 'Klasse!', 'Spitze!'], adLabel: 'Tipp', adTitle: 'Spar-Experte', adSubtitle: 'Jeder Cent zählt', moreSavings: 'Mehr sparen', noPigs: 'Keine Schweine vorhanden', watchedPigs: 'Beobachtete Schweine', removeGuestConfirm: 'Beobachtung beenden?', pigs: 'Schweinchen' },
-    detail: { history: 'Verlauf', confirm: 'Bestätigen', cancel: 'Abbrechen', errorNotEnough: 'Guthaben zu niedrig', withdrawal: 'Auszahlung', available: 'Verfügbar', payout: 'Auszahlen', newGoal: 'Neuer Wunsch', share: 'Aufteilung', noGoals: 'Keine Wünsche', transactions: 'Transaktionen', noTransactions: 'Keine Transaktionen', goal: 'Wunsch', achievements: 'Erfolge', achievementsDesc: 'Deine Belohnungen', editGoal: 'Wunsch bearbeiten', settingsTitle: 'Einstellungen', pigName: 'Name', color: 'Farbe', delete: 'Löschen', payoutTitle: 'Auszahlung' },
+    detail: { history: 'Verlauf', confirm: 'Bestätigen', cancel: 'Abbrechen', errorNotEnough: 'Guthaben zu niedrig', withdrawal: 'Auszahlung', available: 'Verfügbar', payout: 'Auszahlen', newGoal: 'Neuer Wunsch', share: 'Aufteilung', noGoals: 'Keine Wünsche', transactions: 'Transaktionen', noTransactions: 'Keine Transaktionen', goal: 'Wunsch', achievements: 'Erfolge', achievementsDesc: 'Deine Belohnungen', editGoal: 'Wunsch bearbeiten', settingsTitle: 'Einstellungen', pigName: 'Name', color: 'Farbe', delete: 'Löschen', payoutTitle: 'Auszahlung', successTitle: 'Erfolg!', balanceLabel: 'Kontostand', reasonLabel: 'Wofür ist das?', wishLabel: 'Was wünschst du dir?', costLabel: 'Was kostet das?', save: 'Speichern' },
     scanner: { loading: 'Kamera lädt...', modeGuest: 'Zuschauer', title: 'QR Scan', modeOwner: 'Besitzer', manual: 'Code eingeben' },
-    settings: { title: 'Einstellungen', security: 'Sicherheit', newPassword: 'Neues Passwort', passwordSaved: 'Passwort gespeichert', changePassword: 'Passwort ändern', appMode: 'App Modus', profile: 'Profil', name: 'Name', activeSpecials: 'Aktive Items', design: 'Design', language: 'Sprache', info: 'Info', version: 'Version', logout: 'Abmelden', logoutConfirm: 'Abmelden?', cancel: 'Abbrechen', tags: 'Namens-Tags', frames: 'Profil-Rahmen' },
+    settings: {
+      title: 'Einstellungen',
+      security: 'Sicherheit',
+      newPassword: 'Neues Passwort',
+      passwordSaved: 'Passwort gespeichert',
+      changePassword: 'Passwort ändern',
+      appMode: 'App Modus',
+      profile: 'Profil',
+      name: 'Name',
+      activeSpecials: 'Aktive Items',
+      design: 'Design',
+      language: 'Sprache',
+      info: 'Info',
+      version: 'Version',
+      logout: 'Abmelden',
+      logoutConfirm: 'Abmelden?',
+      cancel: 'Abbrechen',
+      tags: 'Namens-Tags',
+      frames: 'Profil-Rahmen',
+      preferences: 'Einstellungen',
+      avatarRings: 'Avatar-Rahmen anzeigen',
+      shopTitles: 'Titel im Shop anzeigen',
+      enabled: 'Aktiviert',
+      disabled: 'Deaktiviert'
+    },
     common: { showLess: 'Weniger', showAll: 'Alle', showAllColors: 'Farben', greeting: 'Hallo', next: 'Weiter', prev: 'Zurück', skip: 'Überspringen', finish: 'Fertig' },
+    sidebar: { dashboard: 'Übersicht', learn: 'Lernen & Spielen', shop: 'Shop', settings: 'Einstellungen', addAccount: 'Neues Schwein', streakProtected: 'Streak geschützt' },
     help: { appTutorial: 'App Hilfe', boxTutorial: 'Box Hilfe' },
     boxTutorial: [
       {
@@ -292,16 +320,41 @@ export const TRANSLATIONS: Record<Language, any> = {
       step4: { title: 'Navigation', text: 'Nutze die Leiste unten, um zum Shop, zu den Spielen oder den Einstellungen zu gelangen.' }
     },
     learn: { sections: { basics: 'Basics', earning: 'Verdienen', spending: 'Ausgeben', saving: 'Sparen', safety: 'Sicherheit' }, start: 'Start', streakFrozen: 'Streak geschützt!' },
-    shop: { title: 'Shop', subtitle: 'Items kaufen', specials: 'Specials', owned: 'Besitzt', sectionAvatars: 'Avatare', sectionThemes: 'Themes', balance: 'Guthaben', discountActive: '50% Rabatt aktiv!' }
+    shop: { title: 'Shop', subtitle: 'Items kaufen', specials: 'Specials', owned: 'Besitzt', sectionAvatars: 'Avatare', sectionThemes: 'Themes', balance: 'Guthaben', discountActive: '50% Rabatt aktiv!', couponAvailableTitle: 'Rabatt-Gutschein verfügbar!', couponAvailableHintOn: 'Wird beim nächsten Kauf eingelöst', couponAvailableHintOff: 'Klicke hier, um 50% zu sparen' }
   },
   en: {
-    login: { slogan: 'Smart saving, big dreams.', title: 'Welcome back', email: 'Email', password: 'Password', button: 'Login', registerBtn: 'Register', forgotPassword: 'Forgot password?', resetTitle: 'Reset password', resetButton: 'Send link', backToLogin: 'Back to login', resetSuccess: 'Email sent!' },
+    login: { slogan: 'Smart saving, big dreams.', title: 'Welcome back', email: 'Email', password: 'Password', button: 'Login', registerBtn: 'Register', forgotPassword: 'Forgot password?', resetTitle: 'Reset password', resetButton: 'Send link', backToLogin: 'Back to login', resetSuccess: 'Email sent!', loginError: 'That didn’t work. Please check your details.', resetError: 'Failed to send email.', registerTitle: 'Create account', alreadyHaveAccount: 'I already have an account', createNewAccount: 'Create new account', verifyTitle: 'Almost done!', verifySentTo: 'We sent an email to:', verifyHint: 'Please click the link in the email to activate your piggy bank!', goToLogin: 'Go to login' },
     age: { title: 'Almost there!', subtitle: 'When is your birthday?', hint: 'This doesn\'t affect features, it only adjusts the app design for you.', confirm: 'Let\'s go', years: 'years', birthdate: 'Birthdate' },
     dashboard: { balance: 'Balance', newPiggy: 'New Pig', myPigs: 'My Piggies', praiseMessages: ['Great!', 'Awesome!', 'Nice!'], adLabel: 'Ad', adTitle: 'Savings Expert', adSubtitle: 'Every cent counts', moreSavings: 'Save more', noPigs: 'No piggies yet', watchedPigs: 'Watched Piggies', removeGuestConfirm: 'Stop watching?', pigs: 'Piggies' },
-    detail: { history: 'History', confirm: 'Confirm', cancel: 'Cancel', errorNotEnough: 'Not enough balance', withdrawal: 'Withdrawal', available: 'Available', payout: 'Withdraw', newGoal: 'New Goal', share: 'Allocation', noGoals: 'No goals', transactions: 'Transactions', noTransactions: 'No transactions', goal: 'Goal', achievements: 'Achievements', achievementsDesc: 'Your rewards', editGoal: 'Edit goal', settingsTitle: 'Settings', pigName: 'Name', color: 'Color', delete: 'Delete', payoutTitle: 'Withdrawal' },
+    detail: { history: 'History', confirm: 'Confirm', cancel: 'Cancel', errorNotEnough: 'Not enough balance', withdrawal: 'Withdrawal', available: 'Available', payout: 'Withdraw', newGoal: 'New Goal', share: 'Allocation', noGoals: 'No goals', transactions: 'Transactions', noTransactions: 'No transactions', goal: 'Goal', achievements: 'Achievements', achievementsDesc: 'Your rewards', editGoal: 'Edit goal', settingsTitle: 'Settings', pigName: 'Name', color: 'Color', delete: 'Delete', payoutTitle: 'Withdrawal', successTitle: 'Success!', balanceLabel: 'Balance', reasonLabel: 'Reason', wishLabel: 'Wish', costLabel: 'Cost', save: 'Save' },
     scanner: { loading: 'Loading...', modeGuest: 'Guest', title: 'Scan QR', modeOwner: 'Owner', manual: 'Enter code' },
-    settings: { title: 'Settings', security: 'Security', newPassword: 'New Password', passwordSaved: 'Password saved', changePassword: 'Change password', appMode: 'App Mode', profile: 'Profile', name: 'Name', activeSpecials: 'Active items', design: 'Design', language: 'Language', info: 'Info', version: 'Version', logout: 'Logout', logoutConfirm: 'Logout?', cancel: 'Cancel', tags: 'Name Tags', frames: 'Profile Frames' },
+    settings: {
+      title: 'Settings',
+      security: 'Security',
+      newPassword: 'New Password',
+      passwordSaved: 'Password saved',
+      changePassword: 'Change password',
+      appMode: 'App Mode',
+      profile: 'Profile',
+      name: 'Name',
+      activeSpecials: 'Active items',
+      design: 'Design',
+      language: 'Language',
+      info: 'Info',
+      version: 'Version',
+      logout: 'Logout',
+      logoutConfirm: 'Logout?',
+      cancel: 'Cancel',
+      tags: 'Name Tags',
+      frames: 'Profile Frames',
+      preferences: 'Preferences',
+      avatarRings: 'Show avatar rings',
+      shopTitles: 'Show shop titles',
+      enabled: 'Enabled',
+      disabled: 'Disabled'
+    },
     common: { showLess: 'Show less', showAll: 'Show all', showAllColors: 'Show colors', greeting: 'Hello', next: 'Next', prev: 'Back', skip: 'Skip', finish: 'Finish' },
+    sidebar: { dashboard: 'Dashboard', learn: 'Learn & Play', shop: 'Shop', settings: 'Settings', addAccount: 'Add account', streakProtected: 'Streak protected' },
     help: { appTutorial: 'App Tutorial', boxTutorial: 'Box Tutorial' },
     boxTutorial: [
         { heading: "Wake up, little friend!", bodyText: "Connect your piggy to power via USB-C. As soon as the display lights up, it's ready for its first meal!" },
@@ -318,10 +371,25 @@ export const TRANSLATIONS: Record<Language, any> = {
       step4: { title: 'Navigation', text: 'Use the bottom bar to visit the shop, play games, or change settings.' }
     },
     learn: { sections: { basics: 'Basics', earning: 'Earning', spending: 'Spending', saving: 'Saving', safety: 'Safety' }, start: 'Start', streakFrozen: 'Streak Protected!' },
-    shop: { title: 'Shop', subtitle: 'Buy items', specials: 'Specials', owned: 'Owned', sectionAvatars: 'Avatars', sectionThemes: 'Themes', balance: 'Balance', discountActive: '50% Discount active!' }
+    shop: { title: 'Shop', subtitle: 'Buy items', specials: 'Specials', owned: 'Owned', sectionAvatars: 'Avatars', sectionThemes: 'Themes', balance: 'Balance', discountActive: '50% Discount active!', couponAvailableTitle: 'Discount coupon available!', couponAvailableHintOn: 'Will be applied to your next purchase', couponAvailableHintOff: 'Click here to save 50%' }
   },
   hr: { login: { slogan: 'Pametna štednja, veliki snovi.', title: 'Dobrodošli natrag' }, age: { title: 'Skoro spremni!' }, dashboard: { balance: 'Saldo' }, common: { next: 'Dalje' }, help: { appTutorial: 'Pomoć' }, tutorial: { step0: { title: 'Dobrodošli!' } }, learn: { start: 'Kreni' }, shop: { title: 'Trgovina' } },
   tr: { login: { slogan: 'Akıllı tasarruf, bükük hayaller.', title: 'Tekrar hoş geldiniz' }, age: { title: 'Neredeyse bitti!' }, dashboard: { balance: 'Bakiye' }, common: { next: 'İleri' }, help: { appTutorial: 'Yardım' }, tutorial: { step0: { title: 'Hoş geldiniz!' } }, learn: { start: 'Başla' }, shop: { title: 'Mağaza' } },
   ru: { login: { slogan: 'Умная экономия, большие мечты.', title: 'С возвращением' }, age: { title: 'Почти готово!' }, dashboard: { balance: 'Баланс' }, common: { next: 'Далее' }, help: { appTutorial: 'Помощь' }, tutorial: { step0: { title: 'Добро пожаловать!' } }, learn: { start: 'Начать' }, shop: { title: 'Магазиn' } },
   hu: { login: { slogan: 'Okos megtakarítás, nagy álmok.', title: 'Üdvözöljük újra' }, age: { title: 'Majdnem kész!' }, dashboard: { balance: 'Egyenleg' }, common: { next: 'Tovább' }, help: { appTutorial: 'Súgó' }, tutorial: { step0: { title: 'Üdvözöljük!' } }, learn: { start: 'Indítás' }, shop: { title: 'Bolt' } }
 };
+
+const isObject = (v: any) => typeof v === 'object' && v !== null && !Array.isArray(v);
+const deepMerge = (base: any, override: any): any => {
+  if (!isObject(base) || !isObject(override)) return override ?? base;
+  const out: any = { ...base };
+  for (const k of Object.keys(override)) {
+    const bv = (base as any)[k];
+    const ov = (override as any)[k];
+    out[k] = (isObject(bv) && isObject(ov)) ? deepMerge(bv, ov) : (ov ?? bv);
+  }
+  return out;
+};
+
+// Use this everywhere instead of TRANSLATIONS[lang] directly (fallbacks for incomplete languages)
+export const getTranslations = (lang: Language) => deepMerge(TRANSLATIONS.de, TRANSLATIONS[lang] || {});

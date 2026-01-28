@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 // Fix: Added missing ChevronRight import
 import { LogOut, Info, User as UserIcon, Palette, Globe, Calendar, Lock, Baby, Briefcase, Tag, Frame, HelpCircle, ChevronRight } from 'lucide-react';
-import { ThemeColor, THEME_COLORS, AVATARS, User, Language, TRANSLATIONS, AppMode, SPECIALS_DATABASE, ViewState } from '../types';
+import { ThemeColor, THEME_COLORS, AVATARS, User, Language, getTranslations, AppMode, SPECIALS_DATABASE, ViewState } from '../types';
 
 interface SettingsScreenProps {
   user: User;
@@ -48,10 +48,11 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [columnsPerRow, setColumnsPerRow] = useState(4);
 
-  const t = TRANSLATIONS[language].settings;
-  const tHelp = TRANSLATIONS[language].help;
-  const tCommon = TRANSLATIONS[language].common;
-  const tAge = TRANSLATIONS[language].age;
+  const tr = getTranslations(language);
+  const t = tr.settings;
+  const tHelp = tr.help;
+  const tCommon = tr.common;
+  const tAge = tr.age;
 
   // Responsive Reihen-Logik
   useEffect(() => {
@@ -113,6 +114,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   const displayedColors = showAllColors ? colors : colors.slice(0, columnsPerRow); 
 
   const getFrameStyles = (frameId: string | undefined) => {
+    if (!user.showAvatarRings) return '';
     switch (frameId) {
         case 'frame_wood': return 'ring-4 ring-amber-800 ring-offset-2';
         case 'frame_silver': return 'ring-4 ring-slate-300 ring-offset-2';
@@ -202,11 +204,59 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
         </button>
       </div>
 
+      {/* Preferences */}
+      <div className="bg-white rounded-[2rem] p-6 mb-6 shadow-xl border border-slate-100">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-slate-50 rounded-xl text-slate-500"><Tag size={20} /></div>
+          <h3 className="font-bold text-slate-800">{t.preferences}</h3>
+        </div>
+
+        <div className="space-y-3">
+          <button
+            type="button"
+            onClick={() => onUpdateUser({ ...user, showAvatarRings: !user.showAvatarRings })}
+            className="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between active:scale-95 transition-all"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-slate-600">
+                <Frame size={20} />
+              </div>
+              <div className="text-left">
+                <div className="font-bold text-slate-800">{t.avatarRings}</div>
+                <div className="text-xs font-bold text-slate-400">{user.showAvatarRings ? t.enabled : t.disabled}</div>
+              </div>
+            </div>
+            <div className={`w-12 h-7 rounded-full p-1 transition-colors ${user.showAvatarRings ? 'bg-emerald-500' : 'bg-slate-300'}`}>
+              <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${user.showAvatarRings ? 'translate-x-5' : 'translate-x-0'}`} />
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onUpdateUser({ ...user, enableShopTitles: !user.enableShopTitles })}
+            className="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between active:scale-95 transition-all"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-slate-600">
+                <Tag size={20} />
+              </div>
+              <div className="text-left">
+                <div className="font-bold text-slate-800">{t.shopTitles}</div>
+                <div className="text-xs font-bold text-slate-400">{user.enableShopTitles ? t.enabled : t.disabled}</div>
+              </div>
+            </div>
+            <div className={`w-12 h-7 rounded-full p-1 transition-colors ${user.enableShopTitles ? 'bg-emerald-500' : 'bg-slate-300'}`}>
+              <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${user.enableShopTitles ? 'translate-x-5' : 'translate-x-0'}`} />
+            </div>
+          </button>
+        </div>
+      </div>
+
       {/* Help / Box Tutorial Section */}
       <div className="bg-white rounded-[2rem] p-6 mb-6 shadow-xl border border-slate-100">
         <div className="flex items-center gap-3 mb-4">
              <div className="p-2 bg-amber-50 rounded-xl text-amber-500"><HelpCircle size={20} /></div>
-             <h3 className="font-bold text-slate-800">Hilfe</h3>
+             <h3 className="font-bold text-slate-800">{tHelp.appTutorial}</h3>
         </div>
         <button 
           onClick={() => onChangeView?.('BOX_TUTORIAL')}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Home, Settings, Plus, GraduationCap, ShoppingBag, LogOut, PiggyBank, PieChart, Briefcase, Snowflake, Flame } from 'lucide-react';
-import { ThemeColor, THEME_COLORS, ViewState, User, AVATARS, CUSTOM_LOGO_URL, AppMode, SPECIALS_DATABASE } from '../types';
+import { ThemeColor, THEME_COLORS, ViewState, User, AVATARS, CUSTOM_LOGO_URL, AppMode, SPECIALS_DATABASE, getTranslations } from '../types';
 
 interface SidebarProps {
   currentView: ViewState;
@@ -12,12 +12,14 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, accentColor, user, onLogout, appMode = 'kids' }) => {
+  const t = getTranslations(user.language);
   const activeFrame = user.activeSpecials.find(id => id.startsWith('frame_'));
   const activeTagId = user.activeSpecials.find(id => id.startsWith('tag_'));
   const activeTag = activeTagId ? SPECIALS_DATABASE.find(item => item.id === activeTagId) : null;
   const isStreakFrozen = user.streakFreezeUntil ? new Date(user.streakFreezeUntil) > new Date() : false;
 
   const getFrameStyles = (frameId: string | undefined) => {
+    if (!user.showAvatarRings) return '';
     switch (frameId) {
         case 'frame_wood': return 'ring-2 ring-amber-800 ring-offset-1';
         case 'frame_silver': return 'ring-2 ring-slate-300 ring-offset-1';
@@ -74,10 +76,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, acc
       </div>
 
       <div className="flex-1 space-y-2">
-        <NavItem view="DASHBOARD" icon={appMode === 'adult' ? PieChart : Home} label={appMode === 'adult' ? "Dashboard" : "Übersicht"} />
-        <NavItem view="LEARN" icon={appMode === 'adult' ? Briefcase : GraduationCap} label={appMode === 'adult' ? "Finanzwissen" : "Lernen & Spielen"} />
-        <NavItem view="SHOP" icon={ShoppingBag} label="Shop" />
-        <NavItem view="SETTINGS" icon={Settings} label="Einstellungen" />
+        <NavItem view="DASHBOARD" icon={appMode === 'adult' ? PieChart : Home} label={t.sidebar.dashboard} />
+        <NavItem view="LEARN" icon={appMode === 'adult' ? Briefcase : GraduationCap} label={t.sidebar.learn} />
+        <NavItem view="SHOP" icon={ShoppingBag} label={t.sidebar.shop} />
+        <NavItem view="SETTINGS" icon={Settings} label={t.sidebar.settings} />
         
         <button
             onClick={() => onChangeView('SCANNER')}
@@ -88,7 +90,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, acc
             }`}
         >
             <Plus size={appMode === 'adult' ? 20 : 24} strokeWidth={3} />
-            <span className={`${appMode === 'adult' ? 'font-semibold text-sm' : 'font-bold text-lg'}`}>{appMode === 'adult' ? 'Konto hinzufügen' : 'Neues Schwein'}</span>
+            <span className={`${appMode === 'adult' ? 'font-semibold text-sm' : 'font-bold text-lg'}`}>{t.sidebar.addAccount}</span>
         </button>
       </div>
 
@@ -100,7 +102,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, acc
             <div className="flex-1 overflow-hidden">
                 <div className="flex items-center gap-1.5">
                     <p className={`${appMode === 'adult' ? 'font-bold text-sm' : 'font-black'} text-slate-800 truncate`}>{user.name}</p>
-                    {isStreakFrozen && <div title="Streak Protected" className="text-blue-400 animate-pulse"><Snowflake size={14} /></div>}
+                    {isStreakFrozen && <div title={t.sidebar.streakProtected} className="text-blue-400 animate-pulse"><Snowflake size={14} /></div>}
                 </div>
                 {activeTag ? (
                     <p className={`text-[9px] font-black uppercase tracking-tighter truncate ${activeTag.color}`}>{activeTag.label.replace('Titel: ', '')}</p>
@@ -116,7 +118,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, acc
                 type="button"
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); onLogout(); }} 
                 className="p-2.5 text-slate-400 hover:text-red-500 transition-colors bg-white/50 hover:bg-white rounded-xl shadow-sm"
-                title="Abmelden"
+                title={t?.settings?.logout || 'Abmelden'}
             >
                 <LogOut size={appMode === 'adult' ? 18 : 22} />
             </button>

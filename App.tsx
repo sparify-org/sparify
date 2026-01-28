@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { User, PiggyBank, ViewState, ThemeColor, Language, TRANSLATIONS, AVATARS, Transaction, Goal, AppMode, CUSTOM_LOGO_URL, THEME_COLORS, SPECIALS_DATABASE } from './types';
+import { User, PiggyBank, ViewState, ThemeColor, Language, getTranslations, AVATARS, Transaction, Goal, AppMode, CUSTOM_LOGO_URL, THEME_COLORS, SPECIALS_DATABASE } from './types';
 import { LoginScreen } from './components/LoginScreen';
 import { DashboardScreen } from './components/DashboardScreen';
 import { SettingsScreen } from './components/SettingsScreen';
@@ -44,7 +44,24 @@ export default function App() {
       userRef.current = user;
   }, [user]);
 
-  const tAge = TRANSLATIONS[language]?.age || TRANSLATIONS['de'].age;
+  const tAge = getTranslations(language).age;
+
+  const getPrefsKey = (uid: string) => `sparify_prefs_${uid}`;
+  const loadPrefs = (uid: string): Pick<User, 'showAvatarRings' | 'enableShopTitles'> => {
+    try {
+      const raw = localStorage.getItem(getPrefsKey(uid));
+      const parsed = raw ? JSON.parse(raw) : {};
+      return {
+        showAvatarRings: typeof parsed.showAvatarRings === 'boolean' ? parsed.showAvatarRings : true,
+        enableShopTitles: typeof parsed.enableShopTitles === 'boolean' ? parsed.enableShopTitles : true
+      };
+    } catch {
+      return { showAvatarRings: true, enableShopTitles: true };
+    }
+  };
+  const savePrefs = (uid: string, prefs: Pick<User, 'showAvatarRings' | 'enableShopTitles'>) => {
+    try { localStorage.setItem(getPrefsKey(uid), JSON.stringify(prefs)); } catch {}
+  };
 
   const calculateAge = (birthDateString: string) => {
     if (!birthDateString) return 0;
@@ -104,6 +121,7 @@ export default function App() {
                     validatedStreak = 0;
                 }
 
+                const prefs = loadPrefs(uid);
                 const userData: User = {
                     name: p.name || 'SparFuchs',
                     email: p.email || email,
@@ -121,20 +139,59 @@ export default function App() {
                     language: p.language || 'de',
                     age: calcAge,
                     birthdate: p.birthdate,
-                    hasSeenTutorial: p.has_seen_tutorial || false
+                    hasSeenTutorial: p.has_seen_tutorial || false,
+                    showAvatarRings: prefs.showAvatarRings,
+                    enableShopTitles: prefs.enableShopTitles
                 };
                 setUser(userData);
                 
-                // If the user hasn't seen the tutorial, switch to the tutorial view
-                if (!userData.hasSeenTutorial && p.birthdate !== null) {
+                // Only auto-open tutorial during initial load (not background refresh)
+                if (showLoadingSpinner && !userData.hasSeenTutorial && p.birthdate !== null) {
                   setView('BOX_TUTORIAL');
                 }
             }
         } else if (showLoadingSpinner) {
+            // Logged in, but no profile row yet -> create it once.
+            // This fixes "register/login takes long and nothing is written in DB".
+            const prefs = loadPrefs(uid);
+            const insertRes = await supabase.from('profiles').upsert({
+              id: uid,
+              email,
+              name: 'SparFuchs',
+              avatar_id: 0,
+              trophies: 0,
+              coins: 0,
+              inventory: [],
+              completed_levels: [],
+              claimed_achievements: [],
+              active_specials: [],
+              streak: 0,
+              last_completed_date: null,
+              language: 'de',
+              birthdate: null,
+              has_seen_tutorial: false
+            });
+            if (insertRes.error) console.error('Profile create failed:', insertRes.error);
+
             setUser({
-                name: 'SparFuchs', email, avatarId: 0, trophies: 0, coins: 0, inventory: [], unseenItems: [],
-                completedLevels: [], claimedAchievements: [], activeSpecials: [], streak: 0, lastCompletedDate: null,
-                language: 'de', age: null, birthdate: null, hasSeenTutorial: false
+              name: 'SparFuchs',
+              email,
+              avatarId: 0,
+              trophies: 0,
+              coins: 0,
+              inventory: [],
+              unseenItems: [],
+              completedLevels: [],
+              claimedAchievements: [],
+              activeSpecials: [],
+              streak: 0,
+              lastCompletedDate: null,
+              language: 'de',
+              age: null,
+              birthdate: null,
+              hasSeenTutorial: false,
+              showAvatarRings: prefs.showAvatarRings,
+              enableShopTitles: prefs.enableShopTitles
             });
             setShowAgeSelection(true);
         }
@@ -225,6 +282,10 @@ export default function App() {
       lastProfileUpdateRef.current = Date.now();
 
       if (!userId) return;
+      savePrefs(userId, {
+        showAvatarRings: updatedUser.showAvatarRings,
+        enableShopTitles: updatedUser.enableShopTitles
+      });
       setIsSyncing(true);
       try {
           const { error } = await supabase.from('profiles').update({
@@ -327,10 +388,23 @@ export default function App() {
       </div>
   );
 
-  if (view === 'LOGIN' && !user) return <LoginScreen onLogin={async (e,p,r) => {
-      if (r) return supabase.auth.signUp({ email: e, password: p });
-      return supabase.auth.signInWithPassword({ email: e, password: p });
-  }} language={language} accentColor={accentColor} />;
+  if (view === 'LOGIN' && !user) return (
+    <LoginScreen
+      onLogin={async (email, password, isRegister) => {
+        if (isRegister) {
+          const { data, error } = await supabase.auth.signUp({ email, password });
+          if (error) throw error;
+          const needsVerification = !data.session;
+          return { success: true, needsVerification };
+        }
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        return { success: true };
+      }}
+      language={language}
+      accentColor={accentColor}
+    />
+  );
 
   if (!user) return null;
 
@@ -389,18 +463,30 @@ export default function App() {
             {view === 'LEARN' && <LearnScreen language={language} accentColor={accentColor} user={user} onCompleteLevel={handleLevelComplete} onLevelStart={() => setIsLevelActive(true)} onLevelEnd={() => setIsLevelActive(false)} appMode={appMode} />}
 
             {view === 'SHOP' && <ShopScreen language={language} user={user} onUpdateUser={updateUserProfile} />}
-            {view === 'SETTINGS' && <SettingsScreen user={user} onUpdateUser={updateUserProfile} accentColor={accentColor} onUpdateAccent={setAccentColor} onLogout={handleLogout} language={language} setLanguage={setLanguage} appMode={appMode} />}
+            {view === 'SETTINGS' && (
+              <SettingsScreen
+                user={user}
+                onUpdateUser={updateUserProfile}
+                accentColor={accentColor}
+                onUpdateAccent={setAccentColor}
+                onLogout={handleLogout}
+                language={language}
+                setLanguage={setLanguage}
+                appMode={appMode}
+                onChangeView={(v) => setView(v)}
+              />
+            )}
             
             {view === 'BOX_TUTORIAL' && (
-              <BoxTutorialScreen 
-                language={language} 
-                accentColor={accentColor} 
-                onFinish={() => { 
-                  updateUserProfile({ ...user, hasSeenTutorial: true });
+              <BoxTutorialScreen
+                language={language}
+                accentColor={accentColor}
+                onFinish={async () => {
+                  await updateUserProfile({ ...user, hasSeenTutorial: true });
                   setView('DASHBOARD');
                 }}
-                onSkip={() => {
-                  updateUserProfile({ ...user, hasSeenTutorial: true });
+                onSkip={async () => {
+                  await updateUserProfile({ ...user, hasSeenTutorial: true });
                   setView('DASHBOARD');
                 }}
               />

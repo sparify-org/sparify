@@ -1,7 +1,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { ArrowLeft, Settings, ArrowUpRight, Target, Trophy, CheckCircle2, PiggyBank as PigIcon, Trash2, Signal, ArrowDownLeft, Wallet, Star, Flag, ArrowRightLeft, PieChart, Check, Sparkles, Gift, ShoppingBag, AlertCircle, PlusCircle, X, Percent, TrendingUp, Info, Lock, Loader2 } from 'lucide-react';
-import { PiggyBank, ThemeColor, THEME_COLORS, Language, TRANSLATIONS, Goal, Transaction, User, AppMode, SPECIALS_DATABASE } from '../types';
+import { PiggyBank, ThemeColor, THEME_COLORS, Language, getTranslations, Goal, Transaction, User, AppMode, SPECIALS_DATABASE } from '../types';
 import { AreaChart, Area, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { AchievementsScreen } from './AchievementsScreen';
 
@@ -51,7 +51,7 @@ export const PiggyDetailScreen: React.FC<PiggyDetailScreenProps> = ({ bank, user
   const [tempAllocation, setTempAllocation] = useState<string>('0');
 
   const colors: ThemeColor[] = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
-  const t = TRANSLATIONS[language].detail;
+  const t = getTranslations(language).detail;
 
   const ownedPigSpecials = SPECIALS_DATABASE.filter(item => 
       item.category === 'piggy' && user.inventory.includes(item.id)
@@ -601,7 +601,7 @@ export const PiggyDetailScreen: React.FC<PiggyDetailScreenProps> = ({ bank, user
                                         safeLockEnabled: safeLockToggle
                                     }); 
                                     setShowSettings(false); 
-                                }} className="w-full bg-slate-900 text-white font-black py-5 rounded-2xl shadow-xl active:scale-95 transition-all mb-3">Speichern</button>
+                                }} className="w-full bg-slate-900 text-white font-black py-5 rounded-2xl shadow-xl active:scale-95 transition-all mb-3">{t.save}</button>
                                 <button onClick={() => setShowDeleteConfirm(true)} className="w-full py-5 rounded-2xl border-2 border-red-100 bg-red-50 text-red-500 font-bold flex items-center justify-center gap-3"><Trash2 size={20} /> {t.delete}</button>
                             </div>
                         </div>
@@ -614,17 +614,17 @@ export const PiggyDetailScreen: React.FC<PiggyDetailScreenProps> = ({ bank, user
                         <div className="flex justify-center mb-4">
                              {transactionSuccess ? <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-500 animate-in zoom-in duration-300"><Check size={40} strokeWidth={3} /></div> : null}
                         </div>
-                        <h3 className="text-2xl font-black text-slate-900 mb-2 text-center">{transactionSuccess ? 'Erfolg!' : t.payoutTitle}</h3>
+                        <h3 className="text-2xl font-black text-slate-900 mb-2 text-center">{transactionSuccess ? t.successTitle : t.payoutTitle}</h3>
                         {!transactionSuccess ? (
                             <>
-                                <p className="text-slate-500 font-bold mb-6 text-center">Kontostand: €{bank.balance.toFixed(2).replace('.', ',')}</p>
+                                <p className="text-slate-500 font-bold mb-6 text-center">{t.balanceLabel}: €{bank.balance.toFixed(2).replace('.', ',')}</p>
                                 <div className="bg-slate-50 rounded-3xl p-6 mb-2 flex items-center border-2 border-slate-100 focus-within:bg-white focus-within:border-amber-400 transition-all">
                                     <span className="text-4xl font-bold text-slate-300 mr-4">€</span>
                                     <input type="text" inputMode="decimal" value={transAmount} onChange={(e) => { setTransAmount(e.target.value); setTransError(null); }} placeholder="0,00" className="bg-transparent text-5xl font-black text-slate-900 w-full outline-none placeholder-slate-200" autoFocus />
                                 </div>
                                 {transError && <div className="mb-4 flex items-center gap-2 text-red-500 font-bold text-sm bg-red-50 p-3 rounded-xl"><AlertCircle size={16} /> {transError}</div>}
                                 <div className="mb-8 mt-2">
-                                    <label className="text-xs font-bold text-slate-400 uppercase ml-2 mb-2 block">{language === 'de' ? 'Wofür ist das?' : 'Reason'}</label>
+                                    <label className="text-xs font-bold text-slate-400 uppercase ml-2 mb-2 block">{t.reasonLabel}</label>
                                     <input type="text" value={transReason} onChange={(e) => setTransReason(e.target.value)} placeholder="z.B. Eis, Lego..." className="w-full bg-slate-50 rounded-2xl px-5 py-4 font-bold text-slate-800 outline-none border-2 border-slate-100 focus:border-indigo-400 focus:bg-white transition-all" />
                                 </div>
                                 <button 
@@ -648,18 +648,18 @@ export const PiggyDetailScreen: React.FC<PiggyDetailScreenProps> = ({ bank, user
                         <h3 className="text-2xl font-black text-slate-900 mb-6">{editingGoal ? t.editGoal : t.newGoal}</h3>
                         <div className="space-y-6">
                             <div>
-                                <label className="text-xs font-bold text-slate-400 uppercase mb-2 block ml-1">{language === 'de' ? 'Was wünschst du dir?' : 'Wish'}</label>
+                                <label className="text-xs font-bold text-slate-400 uppercase mb-2 block ml-1">{t.wishLabel}</label>
                                 <input type="text" value={goalName} onChange={(e) => setGoalName(e.target.value)} className="w-full bg-slate-50 rounded-2xl px-5 py-4 font-black text-slate-800 outline-none border-2 border-slate-100 focus:border-indigo-400 focus:bg-white transition-all" placeholder="z.B. Playstation, Fahrrad..." />
                             </div>
                             <div>
-                                <label className="text-xs font-bold text-slate-400 uppercase mb-2 block ml-1">{language === 'de' ? 'Was kostet das?' : 'Cost'}</label>
+                                <label className="text-xs font-bold text-slate-400 uppercase mb-2 block ml-1">{t.costLabel}</label>
                                 <div className="bg-slate-50 rounded-2xl p-5 flex items-center border-2 border-slate-100 focus-within:bg-white focus-within:border-indigo-400 transition-all">
                                     <span className="text-3xl font-bold text-slate-300 mr-4">€</span>
                                     <input type="text" inputMode="decimal" value={goalAmount} onChange={(e) => setGoalAmount(e.target.value)} placeholder="0,00" className="bg-transparent text-4xl font-black text-slate-900 w-full outline-none" />
                                 </div>
                             </div>
                             <div className="pt-4 flex flex-col gap-3">
-                                <button onClick={handleSaveGoal} className="w-full bg-slate-900 text-white font-black py-5 rounded-2xl shadow-xl active:scale-95 transition-all">Speichern</button>
+                                <button onClick={handleSaveGoal} className="w-full bg-slate-900 text-white font-black py-5 rounded-2xl shadow-xl active:scale-95 transition-all">{t.save}</button>
                                 <button onClick={() => setShowGoalModal(false)} className="w-full py-2 text-slate-400 font-bold">{t.cancel}</button>
                             </div>
                         </div>

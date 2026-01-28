@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { X, Camera, Eye, UserCheck, Loader2, AlertCircle } from 'lucide-react';
-import { ThemeColor, THEME_COLORS, Language, TRANSLATIONS } from '../types';
+import { ThemeColor, THEME_COLORS, Language, getTranslations } from '../types';
 import jsQR from 'jsqr';
 
 interface QRScannerProps {
@@ -26,7 +26,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onClose, onFound, accentCo
   // We need onFound in ref to call it inside the loop reliably without re-binding loop
   const onFoundRef = useRef(onFound);
 
-  const t = TRANSLATIONS[language].scanner;
+  const t = getTranslations(language).scanner;
 
   // Sync state to refs
   useEffect(() => {
