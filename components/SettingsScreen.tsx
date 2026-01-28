@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 // Fix: Added missing ChevronRight import
-import { LogOut, Info, User as UserIcon, Palette, Globe, Calendar, Lock, Baby, Briefcase, Tag, Frame, HelpCircle, ChevronRight } from 'lucide-react';
+import { LogOut, Info, User as UserIcon, Palette, Globe, Calendar, Lock, Baby, Briefcase, Tag, Frame, HelpCircle, ChevronRight, Eye, EyeOff } from 'lucide-react';
 import { ThemeColor, THEME_COLORS, AVATARS, User, Language, getTranslations, AppMode, SPECIALS_DATABASE, ViewState } from '../types';
 
 interface SettingsScreenProps {
@@ -113,9 +113,32 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   const displayedAvatars = showAllAvatars ? AVATARS : AVATARS.slice(0, columnsPerRow);
   const displayedColors = showAllColors ? colors : colors.slice(0, columnsPerRow); 
 
-  const getFrameStyles = (frameId: string | undefined) => {
-    if (!user.showAvatarRings) return '';
-    switch (frameId) {
+  // Get owned frames and titles
+  const ownedFrames = SPECIALS_DATABASE.filter(s => s.category === 'frame' && user.inventory.includes(s.id));
+  const ownedTitles = SPECIALS_DATABASE.filter(s => s.category === 'tag' && user.inventory.includes(s.id));
+
+  // Get active frame (from activeSpecials)
+  const activeFrame = user.activeSpecials.find(id => id.startsWith('frame_'));
+
+  // Toggle frame visibility
+  const toggleFrame = (frameId: string) => {
+    const newFrames = user.activeFrames.includes(frameId)
+      ? user.activeFrames.filter(id => id !== frameId)
+      : [...user.activeFrames, frameId];
+    onUpdateUser({ ...user, activeFrames: newFrames });
+  };
+
+  // Toggle title visibility
+  const toggleTitle = (titleId: string) => {
+    const newTitles = user.activeTitles.includes(titleId)
+      ? user.activeTitles.filter(id => id !== titleId)
+      : [...user.activeTitles, titleId];
+    onUpdateUser({ ...user, activeTitles: newTitles });
+  };
+
+  const getFrameDisplay = (frameId: string) => {
+    if (!user.activeFrames.includes(frameId)) return '';
+    switch(frameId) {
         case 'frame_wood': return 'ring-4 ring-amber-800 ring-offset-2';
         case 'frame_silver': return 'ring-4 ring-slate-300 ring-offset-2';
         case 'frame_gold': return 'ring-4 ring-yellow-400 ring-offset-2';
@@ -126,7 +149,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   return (
     <div className={`flex-1 p-6 pb-32 overflow-y-auto no-scrollbar ${appMode === 'adult' ? 'text-slate-900 bg-slate-100' : ''}`}>
       <div className="flex items-center gap-6 mb-8">
-           <div className={`w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-xl ${getFrameStyles(activeFrame)}`}>
+           <div className={`w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-xl ${getFrameDisplay(activeFrame)}`}>
                <img src={AVATARS[user.avatarId]} alt="Profile" className="w-full h-full object-cover" />
            </div>
            <div>
@@ -204,53 +227,75 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
         </button>
       </div>
 
-      {/* Preferences */}
-      <div className="bg-white rounded-[2rem] p-6 mb-6 shadow-xl border border-slate-100">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-slate-50 rounded-xl text-slate-500"><Tag size={20} /></div>
-          <h3 className="font-bold text-slate-800">{t.preferences}</h3>
+      {/* Frames Section */}
+      {ownedFrames.length > 0 && (
+        <div className="bg-white rounded-[2rem] p-6 mb-6 shadow-xl border border-slate-100">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-amber-50 rounded-xl text-amber-700"><Frame size={20} /></div>
+            <h3 className="font-bold text-slate-800">Profilrahmen</h3>
+          </div>
+          <div className="space-y-3">
+            {ownedFrames.map((frame) => {
+              const isActive = user.activeFrames.includes(frame.id);
+              return (
+                <button
+                  key={frame.id}
+                  onClick={() => toggleFrame(frame.id)}
+                  className="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between active:scale-95 transition-all hover:bg-slate-100"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-xl shadow-sm flex items-center justify-center ${frame.color}`}>
+                      <Frame size={20} />
+                    </div>
+                    <div className="text-left">
+                      <div className="font-bold text-slate-800">{frame.label}</div>
+                      <div className="text-xs font-bold text-slate-400">{frame.description}</div>
+                    </div>
+                  </div>
+                  <div className={`w-12 h-7 rounded-full p-1 transition-colors ${isActive ? 'bg-emerald-500' : 'bg-slate-300'}`}>
+                    <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${isActive ? 'translate-x-5' : 'translate-x-0'}`} />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
+      )}
 
-        <div className="space-y-3">
-          <button
-            type="button"
-            onClick={() => onUpdateUser({ ...user, showAvatarRings: !user.showAvatarRings })}
-            className="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between active:scale-95 transition-all"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-slate-600">
-                <Frame size={20} />
-              </div>
-              <div className="text-left">
-                <div className="font-bold text-slate-800">{t.avatarRings}</div>
-                <div className="text-xs font-bold text-slate-400">{user.showAvatarRings ? t.enabled : t.disabled}</div>
-              </div>
-            </div>
-            <div className={`w-12 h-7 rounded-full p-1 transition-colors ${user.showAvatarRings ? 'bg-emerald-500' : 'bg-slate-300'}`}>
-              <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${user.showAvatarRings ? 'translate-x-5' : 'translate-x-0'}`} />
-            </div>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => onUpdateUser({ ...user, enableShopTitles: !user.enableShopTitles })}
-            className="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between active:scale-95 transition-all"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-slate-600">
-                <Tag size={20} />
-              </div>
-              <div className="text-left">
-                <div className="font-bold text-slate-800">{t.shopTitles}</div>
-                <div className="text-xs font-bold text-slate-400">{user.enableShopTitles ? t.enabled : t.disabled}</div>
-              </div>
-            </div>
-            <div className={`w-12 h-7 rounded-full p-1 transition-colors ${user.enableShopTitles ? 'bg-emerald-500' : 'bg-slate-300'}`}>
-              <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${user.enableShopTitles ? 'translate-x-5' : 'translate-x-0'}`} />
-            </div>
-          </button>
+      {/* Titles Section */}
+      {ownedTitles.length > 0 && (
+        <div className="bg-white rounded-[2rem] p-6 mb-6 shadow-xl border border-slate-100">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-purple-50 rounded-xl text-purple-700"><Tag size={20} /></div>
+            <h3 className="font-bold text-slate-800">Profile Titel</h3>
+          </div>
+          <div className="space-y-3">
+            {ownedTitles.map((title) => {
+              const isActive = user.activeTitles.includes(title.id);
+              return (
+                <button
+                  key={title.id}
+                  onClick={() => toggleTitle(title.id)}
+                  className="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between active:scale-95 transition-all hover:bg-slate-100"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-xl shadow-sm flex items-center justify-center ${title.color}`}>
+                      <Tag size={20} />
+                    </div>
+                    <div className="text-left">
+                      <div className="font-bold text-slate-800">{title.label}</div>
+                      <div className="text-xs font-bold text-slate-400">{title.description}</div>
+                    </div>
+                  </div>
+                  <div className={`w-12 h-7 rounded-full p-1 transition-colors ${isActive ? 'bg-emerald-500' : 'bg-slate-300'}`}>
+                    <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${isActive ? 'translate-x-5' : 'translate-x-0'}`} />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Help / Box Tutorial Section */}
       <div className="bg-white rounded-[2rem] p-6 mb-6 shadow-xl border border-slate-100">

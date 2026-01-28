@@ -19,7 +19,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, acc
   const isStreakFrozen = user.streakFreezeUntil ? new Date(user.streakFreezeUntil) > new Date() : false;
 
   const getFrameStyles = (frameId: string | undefined) => {
-    if (!user.showAvatarRings) return '';
+    if (!frameId || !user.activeFrames.includes(frameId)) return '';
     switch (frameId) {
         case 'frame_wood': return 'ring-2 ring-amber-800 ring-offset-1';
         case 'frame_silver': return 'ring-2 ring-slate-300 ring-offset-1';

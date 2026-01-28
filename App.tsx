@@ -47,19 +47,19 @@ export default function App() {
   const tAge = getTranslations(language).age;
 
   const getPrefsKey = (uid: string) => `sparify_prefs_${uid}`;
-  const loadPrefs = (uid: string): Pick<User, 'showAvatarRings' | 'enableShopTitles'> => {
+  const loadPrefs = (uid: string): Pick<User, 'activeFrames' | 'activeTitles'> => {
     try {
       const raw = localStorage.getItem(getPrefsKey(uid));
       const parsed = raw ? JSON.parse(raw) : {};
       return {
-        showAvatarRings: typeof parsed.showAvatarRings === 'boolean' ? parsed.showAvatarRings : true,
-        enableShopTitles: typeof parsed.enableShopTitles === 'boolean' ? parsed.enableShopTitles : true
+        activeFrames: Array.isArray(parsed.activeFrames) ? parsed.activeFrames : [],
+        activeTitles: Array.isArray(parsed.activeTitles) ? parsed.activeTitles : []
       };
     } catch {
-      return { showAvatarRings: true, enableShopTitles: true };
+      return { activeFrames: [], activeTitles: [] };
     }
   };
-  const savePrefs = (uid: string, prefs: Pick<User, 'showAvatarRings' | 'enableShopTitles'>) => {
+  const savePrefs = (uid: string, prefs: Pick<User, 'activeFrames' | 'activeTitles'>) => {
     try { localStorage.setItem(getPrefsKey(uid), JSON.stringify(prefs)); } catch {}
   };
 
@@ -140,8 +140,8 @@ export default function App() {
                     age: calcAge,
                     birthdate: p.birthdate,
                     hasSeenTutorial: p.has_seen_tutorial || false,
-                    showAvatarRings: prefs.showAvatarRings,
-                    enableShopTitles: prefs.enableShopTitles
+                    activeFrames: prefs.activeFrames,
+                    activeTitles: prefs.activeTitles
                 };
                 setUser(userData);
                 
@@ -190,8 +190,8 @@ export default function App() {
               age: null,
               birthdate: null,
               hasSeenTutorial: false,
-              showAvatarRings: prefs.showAvatarRings,
-              enableShopTitles: prefs.enableShopTitles
+              activeFrames: [],
+              activeTitles: []
             });
             setShowAgeSelection(true);
         }
@@ -240,13 +240,19 @@ export default function App() {
   useEffect(() => {
     if (!userId || !user) return;
     const interval = setInterval(async () => {
-      if (isRefreshingRef.current) return;
+      // Skip refresh if already loading/syncing to prevent infinite loading
+      if (loading || isSyncing || isRefreshingRef.current) return;
       isRefreshingRef.current = true;
-      try { await loadUserData(userId, user.email, false); } catch (err) { console.error(err); } 
-      finally { isRefreshingRef.current = false; }
-    }, 5000);
+      try { 
+        await loadUserData(userId, user.email, false); 
+      } catch (err) { 
+        console.error("Background refresh error:", err); 
+      } finally { 
+        isRefreshingRef.current = false; 
+      }
+    }, 10000); // Increased from 5s to 10s to reduce server load
     return () => clearInterval(interval);
-  }, [userId, user?.email, loadUserData]);
+  }, [userId, user?.email, loadUserData, loading, isSyncing]);
 
   useEffect(() => {
     let mounted = true;
@@ -283,8 +289,8 @@ export default function App() {
 
       if (!userId) return;
       savePrefs(userId, {
-        showAvatarRings: updatedUser.showAvatarRings,
-        enableShopTitles: updatedUser.enableShopTitles
+        activeFrames: updatedUser.activeFrames,
+        activeTitles: updatedUser.activeTitles
       });
       setIsSyncing(true);
       try {

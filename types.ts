@@ -31,9 +31,9 @@ export interface User {
   age: number | null;
   birthdate: string | null;
   hasSeenTutorial: boolean;
-  // User preferences (stored locally; safe defaults if missing)
-  showAvatarRings: boolean;
-  enableShopTitles: boolean;
+  // Individual frame/title visibility preferences (stored locally; safe defaults if missing)
+  activeFrames: string[]; // e.g. ['frame_wood', 'frame_silver', 'frame_gold']
+  activeTitles: string[]; // e.g. ['tag_saver_pro', 'tag_money_magnet']
 }
 
 export interface PiggyBank {

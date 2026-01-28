@@ -83,11 +83,9 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ user, onUpdateUser, lang
           price: 100
       }));
 
-      const specials = user.enableShopTitles
-        ? SPECIALS_DATABASE
-        : SPECIALS_DATABASE.filter(s => s.category !== 'tag');
+      const specials = SPECIALS_DATABASE;
       return { avatars: todaysAvatars, themes: todaysThemes, specials };
-  }, [todayStr, user.enableShopTitles]);
+  }, [todayStr]);
 
   useEffect(() => {
       const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 60000);
