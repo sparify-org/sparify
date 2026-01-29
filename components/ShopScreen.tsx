@@ -22,7 +22,8 @@ const sfc32 = (a: number, b: number, c: number, d: number) => {
 }
 
 export const ShopScreen: React.FC<ShopScreenProps> = ({ user, onUpdateUser, language }) => {
-  const t = getTranslations(language).shop;
+    const t = getTranslations(language).shop;
+    const itemTranslations = (getTranslations(language) as any).shopItems || {};
 
   const [devDateOffset, setDevDateOffset] = useState(0);
   const [applyDiscount, setApplyDiscount] = useState(false);
@@ -206,8 +207,8 @@ export const ShopScreen: React.FC<ShopScreenProps> = ({ user, onUpdateUser, lang
                             <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center mb-3 shadow-sm group-hover:scale-110 transition-transform duration-500">
                                 <item.icon className={item.color} size={24} />
                             </div>
-                            <h3 className="font-black text-sm text-slate-800 mb-0.5 leading-tight">{item.label}</h3>
-                            <p className="text-slate-400 text-[10px] font-bold mb-4 px-1 leading-tight h-8 flex items-center justify-center">{item.description}</p>
+                            <h3 className="font-black text-sm text-slate-800 mb-0.5 leading-tight">{(itemTranslations[item.id]?.label) || item.label}</h3>
+                            <p className="text-slate-400 text-[10px] font-bold mb-4 px-1 leading-tight h-8 flex items-center justify-center">{(itemTranslations[item.id]?.description) || item.description}</p>
                             
                             {owned && item.id !== 'item_streak_freeze' ? (
                                 <button disabled className="w-full bg-emerald-50 text-emerald-600 font-bold py-3 rounded-xl flex items-center justify-center gap-2 text-xs">

@@ -185,7 +185,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onClose, onFound, accentCo
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black flex flex-col">
+    <div className="fixed inset-0 z-[9999] bg-black flex flex-col">
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-20 bg-gradient-to-b from-black/80 to-transparent">
         <h2 className="text-white font-bold">Sparify Connect</h2>
@@ -209,8 +209,8 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onClose, onFound, accentCo
         {/* 2. Canvas Element (Display + Feedback) */}
         {/* We use this to render the feed + bounding box */}
         <canvas 
-            ref={canvasRef} 
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${cameraActive ? 'opacity-100' : 'opacity-0'}`}
+          ref={canvasRef} 
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 z-0 ${cameraActive ? 'opacity-100' : 'opacity-0'}`}
         />
 
         {/* Loading / Placeholder State */}
@@ -259,7 +259,7 @@ export const QRScanner: React.FC<QRScannerProps> = ({ onClose, onFound, accentCo
       </div>
 
       {/* Manual Entry & Mode Switch */}
-      <div className="bg-gray-900 p-6 pb-12 rounded-t-[2.5rem] -mt-6 relative z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+      <div className="bg-gray-900 p-6 rounded-t-[2.5rem] -mt-6 relative z-20 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 3rem)' }}>
         <div className="w-12 h-1.5 bg-gray-700 rounded-full mx-auto mb-8"></div>
         
         {/* Guest Mode Toggle */}

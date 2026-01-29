@@ -14,6 +14,7 @@ interface SettingsScreenProps {
   setLanguage: (lang: Language) => void;
   appMode: AppMode;
   onChangeView?: (view: ViewState) => void;
+  onOpenAppHelp?: () => void;
 }
 
 const colors: ThemeColor[] = [
@@ -40,7 +41,8 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   onLogout,
   language,
   appMode,
-  onChangeView
+  onChangeView,
+  onOpenAppHelp
 }) => {
   const [editingName, setEditingName] = useState(user.name);
   const [showAllAvatars, setShowAllAvatars] = useState(false);
@@ -117,22 +119,16 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
   const ownedFrames = SPECIALS_DATABASE.filter(s => s.category === 'frame' && user.inventory.includes(s.id));
   const ownedTitles = SPECIALS_DATABASE.filter(s => s.category === 'tag' && user.inventory.includes(s.id));
 
-  // Get active frame (from activeSpecials)
-  const activeFrame = user.activeSpecials.find(id => id.startsWith('frame_'));
 
-  // Toggle frame visibility
-  const toggleFrame = (frameId: string) => {
-    const newFrames = user.activeFrames.includes(frameId)
-      ? user.activeFrames.filter(id => id !== frameId)
-      : [...user.activeFrames, frameId];
+  // Select frame (only one can be active)
+  const selectFrame = (frameId: string) => {
+    const newFrames = user.activeFrames.includes(frameId) ? [] : [frameId];
     onUpdateUser({ ...user, activeFrames: newFrames });
   };
 
-  // Toggle title visibility
-  const toggleTitle = (titleId: string) => {
-    const newTitles = user.activeTitles.includes(titleId)
-      ? user.activeTitles.filter(id => id !== titleId)
-      : [...user.activeTitles, titleId];
+  // Select title (only one can be active)
+  const selectTitle = (titleId: string) => {
+    const newTitles = user.activeTitles.includes(titleId) ? [] : [titleId];
     onUpdateUser({ ...user, activeTitles: newTitles });
   };
 
@@ -240,8 +236,9 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
               return (
                 <button
                   key={frame.id}
-                  onClick={() => toggleFrame(frame.id)}
-                  className="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between active:scale-95 transition-all hover:bg-slate-100"
+                  onClick={() => selectFrame(frame.id)}
+                  className="w-full p-4 rounded-2xl bg-slate-50 border-2 flex items-center justify-between active:scale-95 transition-all hover:bg-slate-100"
+                  style={{ borderColor: isActive ? '#10b981' : '#e2e8f0' }}
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-xl shadow-sm flex items-center justify-center ${frame.color}`}>
@@ -252,8 +249,8 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                       <div className="text-xs font-bold text-slate-400">{frame.description}</div>
                     </div>
                   </div>
-                  <div className={`w-12 h-7 rounded-full p-1 transition-colors ${isActive ? 'bg-emerald-500' : 'bg-slate-300'}`}>
-                    <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${isActive ? 'translate-x-5' : 'translate-x-0'}`} />
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isActive ? 'bg-emerald-500 border-emerald-600' : 'border-slate-300'}`}>
+                    {isActive && <div className="w-2 h-2 bg-white rounded-full" />}
                   </div>
                 </button>
               );
@@ -275,8 +272,9 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
               return (
                 <button
                   key={title.id}
-                  onClick={() => toggleTitle(title.id)}
-                  className="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between active:scale-95 transition-all hover:bg-slate-100"
+                  onClick={() => selectTitle(title.id)}
+                  className="w-full p-4 rounded-2xl bg-slate-50 border-2 flex items-center justify-between active:scale-95 transition-all hover:bg-slate-100"
+                  style={{ borderColor: isActive ? '#8b5cf6' : '#e2e8f0' }}
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-xl shadow-sm flex items-center justify-center ${title.color}`}>
@@ -287,8 +285,8 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                       <div className="text-xs font-bold text-slate-400">{title.description}</div>
                     </div>
                   </div>
-                  <div className={`w-12 h-7 rounded-full p-1 transition-colors ${isActive ? 'bg-emerald-500' : 'bg-slate-300'}`}>
-                    <div className={`w-5 h-5 bg-white rounded-full shadow transition-transform ${isActive ? 'translate-x-5' : 'translate-x-0'}`} />
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${isActive ? 'bg-purple-500 border-purple-600' : 'border-slate-300'}`}>
+                    {isActive && <div className="w-2 h-2 bg-white rounded-full" />}
                   </div>
                 </button>
               );
@@ -314,6 +312,19 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           {/* Fix: Added missing ChevronRight component */}
           <ChevronRight size={18} className="text-slate-300" />
         </button>
+        
+        {onOpenAppHelp && (
+          <button 
+            onClick={onOpenAppHelp}
+            className="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between group active:scale-95 transition-all mt-3"
+          >
+            <div className="flex items-center gap-3">
+               <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform"><HelpCircle size={20} /></div>
+               <span className="font-bold text-slate-800">{tHelp.appTutorial}</span>
+            </div>
+            <ChevronRight size={18} className="text-slate-300" />
+          </button>
+        )}
       </div>
 
       <div className="bg-white rounded-[2rem] p-6 mb-6 shadow-xl border border-slate-100">

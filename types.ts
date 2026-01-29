@@ -65,8 +65,9 @@ export interface SpecialItem {
 export const SPECIALS_DATABASE: SpecialItem[] = [
   {
     id: 'item_discount_coupon',
-    label: '50% Rabatt-Gutschein',
-    description: 'Halbiert den Preis deines nächsten Einkaufs!',
+    // label/description moved to translations
+    label: 'item_discount_coupon',
+    description: 'item_discount_coupon',
     price: 80,
     category: 'coupon',
     icon: Ticket,
@@ -83,8 +84,8 @@ export const SPECIALS_DATABASE: SpecialItem[] = [
   },
   {
     id: 'frame_wood',
-    label: 'Holz-Rahmen',
-    description: 'Ein rustikaler Rahmen für dein Profilbild.',
+    label: 'frame_wood',
+    description: 'frame_wood',
     price: 150,
     category: 'frame',
     icon: Frame,
@@ -92,8 +93,8 @@ export const SPECIALS_DATABASE: SpecialItem[] = [
   },
   {
     id: 'frame_silver',
-    label: 'Silber-Rahmen',
-    description: 'Glänze mit diesem edlen Silber-Rahmen.',
+    label: 'frame_silver',
+    description: 'frame_silver',
     price: 300,
     category: 'frame',
     icon: Shield,
@@ -101,8 +102,8 @@ export const SPECIALS_DATABASE: SpecialItem[] = [
   },
   {
     id: 'frame_gold',
-    label: 'Gold-Rahmen',
-    description: 'Der ultimative Status für Spar-Könige.',
+    label: 'frame_gold',
+    description: 'frame_gold',
     price: 600,
     category: 'frame',
     icon: Crown,
@@ -110,8 +111,8 @@ export const SPECIALS_DATABASE: SpecialItem[] = [
   },
   {
     id: 'tag_saver_pro',
-    label: 'Titel: Spar-Profi',
-    description: 'Zeige allen, dass du dein Geld im Griff hast.',
+    label: 'tag_saver_pro',
+    description: 'tag_saver_pro',
     price: 100,
     category: 'tag',
     icon: BadgeCheck,
@@ -119,8 +120,8 @@ export const SPECIALS_DATABASE: SpecialItem[] = [
   },
   {
     id: 'tag_money_magnet',
-    label: 'Titel: Münz-Magnet',
-    description: 'Du ziehst das Geld förmlich an!',
+    label: 'tag_money_magnet',
+    description: 'tag_money_magnet',
     price: 200,
     category: 'tag',
     icon: Zap,
@@ -128,14 +129,16 @@ export const SPECIALS_DATABASE: SpecialItem[] = [
   },
   {
     id: 'tag_future_boss',
-    label: 'Titel: Zukunfts-Boss',
-    description: 'Große Träume erfordern große Disziplin.',
+    label: 'tag_future_boss',
+    description: 'tag_future_boss',
     price: 400,
     category: 'tag',
     icon: Star,
     color: 'text-purple-500'
   }
 ];
+
+// Per-item translations keys will be available via getTranslations(lang).shopItems[<id>].label/description
 
 export interface Achievement {
   id: string;
@@ -150,7 +153,7 @@ export const ACHIEVEMENTS_LIST: Achievement[] = [
   {
     id: 'first_pig',
     title: 'Der erste Schritt',
-    description: 'Besitze dein erstes Sparschwein.',
+    description: 'Besitze deine erste Sparbox.',
     reward: 20,
     icon: '🐷',
     condition: (u, pigs) => pigs.filter(p => p.role === 'owner').length > 0
@@ -257,9 +260,30 @@ export const THEME_COLORS: { [key in ThemeColor]: string } = {
 
 export const TRANSLATIONS: Record<Language, any> = {
   de: {
-    login: { slogan: 'Schlau sparen, Träume erfüllen.', title: 'Willkommen zurück', email: 'E-Mail', password: 'Passwort', button: 'Einloggen', registerBtn: 'Konto erstellen', forgotPassword: 'Passwort vergessen?', resetTitle: 'Passwort zurücksetzen', resetButton: 'Link senden', backToLogin: 'Zurück zum Login', resetSuccess: 'E-Mail gesendet!', loginError: 'Das hat nicht geklappt. Bitte prüfe deine Daten.', resetError: 'Fehler beim Senden der Email.', registerTitle: 'Neues Konto', alreadyHaveAccount: 'Ich habe schon ein Konto', createNewAccount: 'Neues Konto erstellen', verifyTitle: 'Fast geschafft!', verifySentTo: 'Wir haben eine E-Mail geschickt an:', verifyHint: 'Bitte klicke auf den Link in der E-Mail, um dein Sparschwein zu aktivieren!', goToLogin: 'Zum Login' },
+    login: {
+      slogan: 'Schlau sparen, Träume erfüllen.',
+      title: 'Willkommen zurück',
+      email: 'E-Mail',
+      password: 'Passwort',
+      button: 'Einloggen',
+      registerBtn: 'Konto erstellen',
+      forgotPassword: 'Passwort vergessen?',
+      resetTitle: 'Passwort zurücksetzen',
+      resetButton: 'Link senden',
+      backToLogin: 'Zurück zum Login',
+      resetSuccess: 'E-Mail gesendet!',
+      loginError: 'Das hat nicht geklappt. Bitte prüfe deine Daten.',
+      resetError: 'Fehler beim Senden der Email.',
+      registerTitle: 'Neues Konto',
+      alreadyHaveAccount: 'Ich habe schon ein Konto',
+      createNewAccount: 'Neues Konto erstellen',
+      verifyTitle: 'Fast geschafft!',
+      verifySentTo: 'Wir haben eine E-Mail geschickt an:',
+      verifyHint: 'Bitte klicke auf den Link in der E-Mail, um deine Sparbox zu aktivieren!',
+      goToLogin: 'Zum Login'
+    },
     age: { title: 'Fast fertig!', subtitle: 'Wann hast du Geburtstag?', hint: 'Dies hat keinen Einfluss auf die Funktionen, es passt lediglich das Design der App an dich an.', confirm: 'Los geht\'s', years: 'Jahre', birthdate: 'Geburtsdatum' },
-    dashboard: { balance: 'Kontostand', newPig: 'Neues Schwein', myPigs: 'Meine Schweine', praiseMessages: ['Super!', 'Klasse!', 'Spitze!'], adLabel: 'Tipp', adTitle: 'Spar-Experte', adSubtitle: 'Jeder Cent zählt', moreSavings: 'Mehr sparen', noPigs: 'Keine Schweine vorhanden', watchedPigs: 'Beobachtete Schweine', removeGuestConfirm: 'Beobachtung beenden?', pigs: 'Schweinchen' },
+    dashboard: { balance: 'Kontostand', newPig: 'Neue Sparbox', myPigs: 'Meine Sparboxen', praiseMessages: ['Super!', 'Klasse!', 'Spitze!'], adLabel: 'Tipp', adTitle: 'Spar-Experte', adSubtitle: 'Jeder Cent zählt', moreSavings: 'Mehr sparen', noPigs: 'Keine Sparboxen vorhanden', watchedPigs: 'Beobachtete Sparboxen', removeGuestConfirm: 'Beobachtung beenden?', pigs: 'Sparboxen' },
     detail: { history: 'Verlauf', confirm: 'Bestätigen', cancel: 'Abbrechen', errorNotEnough: 'Guthaben zu niedrig', withdrawal: 'Auszahlung', available: 'Verfügbar', payout: 'Auszahlen', newGoal: 'Neuer Wunsch', share: 'Aufteilung', noGoals: 'Keine Wünsche', transactions: 'Transaktionen', noTransactions: 'Keine Transaktionen', goal: 'Wunsch', achievements: 'Erfolge', achievementsDesc: 'Deine Belohnungen', editGoal: 'Wunsch bearbeiten', settingsTitle: 'Einstellungen', pigName: 'Name', color: 'Farbe', delete: 'Löschen', payoutTitle: 'Auszahlung', successTitle: 'Erfolg!', balanceLabel: 'Kontostand', reasonLabel: 'Wofür ist das?', wishLabel: 'Was wünschst du dir?', costLabel: 'Was kostet das?', save: 'Speichern' },
     scanner: { loading: 'Kamera lädt...', modeGuest: 'Zuschauer', title: 'QR Scan', modeOwner: 'Besitzer', manual: 'Code eingeben' },
     settings: {
@@ -288,39 +312,34 @@ export const TRANSLATIONS: Record<Language, any> = {
       disabled: 'Deaktiviert'
     },
     common: { showLess: 'Weniger', showAll: 'Alle', showAllColors: 'Farben', greeting: 'Hallo', next: 'Weiter', prev: 'Zurück', skip: 'Überspringen', finish: 'Fertig' },
-    sidebar: { dashboard: 'Übersicht', learn: 'Lernen & Spielen', shop: 'Shop', settings: 'Einstellungen', addAccount: 'Neues Schwein', streakProtected: 'Streak geschützt' },
+    sidebar: { dashboard: 'Übersicht', learn: 'Lernen & Spielen', shop: 'Shop', settings: 'Einstellungen', addAccount: 'Neue Sparbox', streakProtected: 'Streak geschützt' },
     help: { appTutorial: 'App Hilfe', boxTutorial: 'Box Hilfe' },
     boxTutorial: [
-      {
-        heading: "Wach auf, kleiner Freund!",
-        bodyText: "Schließe dein Schweinchen per USB-C an den Strom an. Sobald das Display hell leuchtet, ist es bereit für seine erste Mahlzeit!",
-      },
-      {
-        heading: "Wir werden ein Team",
-        bodyText: "Deine App sucht nun nach deinem Sparschwein. Achte auf den fröhlichen Piep-Ton – er verrät dir, dass die Verbindung steht!",
-      },
-      {
-        heading: "Fütterungszeit!",
-        bodyText: "Schiebe Münzen oder Scheine in den Schlitz. Das Display erkennt den Wert sofort und zählt in Echtzeit für dich hoch.",
-      },
-      {
-        heading: "Sicher wie im Tresor",
-        bodyText: "Dank deines digitalen Schlosses bleibt dein Erspartes geschützt. Das Display zeigt dir immer an, ob alles sicher verschlossen ist.",
-      },
-      {
-        heading: "Bau dir deine Welt",
-        bodyText: "Nutze bunte Bausteine, um dein Schweinchen einzigartig zu machen. Drücke jetzt auf Start und erfülle dir deine ersten Träume!",
-      }
+      { heading: "Wach auf, kleiner Freund!", bodyText: "Schließe deine Sparbox per USB-C an den Strom an. Sobald das Display hell leuchtet, ist sie bereit für ihre erste Mahlzeit!" },
+      { heading: "Wir werden ein Team", bodyText: "Deine App sucht nun nach deiner Sparbox. Achte auf den fröhlichen Piep-Ton – er verrät dir, dass die Verbindung steht!" },
+      { heading: "Fütterungszeit!", bodyText: "Schiebe Münzen oder Scheine in den Schlitz. Das Display erkennt den Wert sofort und zählt in Echtzeit für dich hoch." },
+      { heading: "Sicher wie im Tresor", bodyText: "Dank deines digitalen Schlosses bleibt dein Erspartes geschützt. Das Display zeigt dir immer an, ob alles sicher verschlossen ist." },
+      { heading: "Bau dir deine Welt", bodyText: "Nutze bunte Bausteine, um deine Sparbox einzigartig zu machen. Drücke jetzt auf Start und erfülle dir deine ersten Träume!" }
     ],
     tutorial: {
-      step0: { title: 'Willkommen bei Sparify!', text: 'Wir zeigen dir kurz, wie du mit deinem digitalen Sparschwein Träume erfüllen kannst.' },
-      step1: { title: 'Dein Kontostand', text: 'Hier siehst du, wie viel Geld du insgesamt in all deinen Sparschweinen gespart hast.' },
-      step2: { title: 'Deine Schweinchen', text: 'In dieser Liste findest du alle deine Schweine. Tippe auf eines, um Details zu sehen oder Geld auszuzahlen.' },
-      step3: { title: 'Scanner & Hinzufügen', text: 'Tippe auf das Plus, um ein neues Sparschwein zu scannen oder per Code hinzuzufügen.' },
+      step0: { title: 'Willkommen bei Sparify!', text: 'Wir zeigen dir kurz, wie du mit deiner digitalen Sparbox Träume erfüllen kannst.' },
+      step1: { title: 'Dein Kontostand', text: 'Hier siehst du, wie viel Geld du insgesamt in all deinen Sparboxen gespart hast.' },
+      step2: { title: 'Deine Sparboxen', text: 'In dieser Liste findest du alle deine Sparboxen. Tippe auf eine, um Details zu sehen oder Geld auszuzahlen.' },
+      step3: { title: 'Scanner & Hinzufügen', text: 'Tippe auf das Plus, um eine neue Sparbox zu scannen oder per Code hinzuzufügen.' },
       step4: { title: 'Navigation', text: 'Nutze die Leiste unten, um zum Shop, zu den Spielen oder den Einstellungen zu gelangen.' }
     },
     learn: { sections: { basics: 'Basics', earning: 'Verdienen', spending: 'Ausgeben', saving: 'Sparen', safety: 'Sicherheit' }, start: 'Start', streakFrozen: 'Streak geschützt!' },
-    shop: { title: 'Shop', subtitle: 'Items kaufen', specials: 'Specials', owned: 'Besitzt', sectionAvatars: 'Avatare', sectionThemes: 'Themes', balance: 'Guthaben', discountActive: '50% Rabatt aktiv!', couponAvailableTitle: 'Rabatt-Gutschein verfügbar!', couponAvailableHintOn: 'Wird beim nächsten Kauf eingelöst', couponAvailableHintOff: 'Klicke hier, um 50% zu sparen' }
+    shop: { title: 'Shop', subtitle: 'Items kaufen', specials: 'Specials', owned: 'Besitzt', sectionAvatars: 'Avatare', sectionThemes: 'Themes', balance: 'Guthaben', discountActive: '50% Rabatt aktiv!', couponAvailableTitle: 'Rabatt-Gutschein verfügbar!', couponAvailableHintOn: 'Wird beim nächsten Kauf eingelöst', couponAvailableHintOff: 'Klicke hier, um 50% zu sparen' },
+    shopItems: {
+      item_discount_coupon: { label: '50% Rabatt-Gutschein', description: 'Halbiert den Preis deines nächsten Einkaufs!' },
+      item_streak_freeze: { label: 'Streakfreezer', description: 'Friert deine Streak für 24h ein.' },
+      frame_wood: { label: 'Holz-Rahmen', description: 'Ein rustikaler Rahmen für dein Profilbild.' },
+      frame_silver: { label: 'Silber-Rahmen', description: 'Glänze mit diesem edlen Silber-Rahmen.' },
+      frame_gold: { label: 'Gold-Rahmen', description: 'Der ultimative Status für Spar-Könige.' },
+      tag_saver_pro: { label: 'Spar-Profi', description: 'Zeige allen, dass du dein Geld im Griff hast.' },
+      tag_money_magnet: { label: 'Münz-Magnet', description: 'Du ziehst das Geld förmlich an!' },
+      tag_future_boss: { label: 'Zukunfts-Boss', description: 'Große Träume erfordern große Disziplin.' }
+    }
   },
   en: {
     login: { slogan: 'Smart saving, big dreams.', title: 'Welcome back', email: 'Email', password: 'Password', button: 'Login', registerBtn: 'Register', forgotPassword: 'Forgot password?', resetTitle: 'Reset password', resetButton: 'Send link', backToLogin: 'Back to login', resetSuccess: 'Email sent!', loginError: 'That didn’t work. Please check your details.', resetError: 'Failed to send email.', registerTitle: 'Create account', alreadyHaveAccount: 'I already have an account', createNewAccount: 'Create new account', verifyTitle: 'Almost done!', verifySentTo: 'We sent an email to:', verifyHint: 'Please click the link in the email to activate your piggy bank!', goToLogin: 'Go to login' },
@@ -357,11 +376,11 @@ export const TRANSLATIONS: Record<Language, any> = {
     sidebar: { dashboard: 'Dashboard', learn: 'Learn & Play', shop: 'Shop', settings: 'Settings', addAccount: 'Add account', streakProtected: 'Streak protected' },
     help: { appTutorial: 'App Tutorial', boxTutorial: 'Box Tutorial' },
     boxTutorial: [
-        { heading: "Wake up, little friend!", bodyText: "Connect your piggy to power via USB-C. As soon as the display lights up, it's ready for its first meal!" },
-        { heading: "Becoming a Team", bodyText: "Your app is now searching for your piggy bank. Listen for the happy beep – it tells you that the connection is established!" },
-        { heading: "Feeding Time!", bodyText: "Slide coins or bills into the slot. The display recognizes the value immediately and counts up for you in real time." },
-        { heading: "Safe like a Vault", bodyText: "Thanks to your digital lock, your savings stay protected. The display always shows you if everything is securely locked." },
-        { heading: "Build your World", bodyText: "Use colorful building blocks to make your piggy unique. Press Start now and fulfill your first dreams!" }
+      { heading: "Wake up, little friend!", bodyText: "Connect your piggy to power via USB-C. As soon as the display lights up, it's ready for its first meal!" },
+      { heading: "Becoming a Team", bodyText: "Your app is now searching for your piggy bank. Listen for the happy beep – it tells you that the connection is established!" },
+      { heading: "Feeding Time!", bodyText: "Slide coins or bills into the slot. The display recognizes the value immediately and counts up for you in real time." },
+      { heading: "Safe like a Vault", bodyText: "Thanks to your digital lock, your savings stay protected. The display always shows you if everything is securely locked." },
+      { heading: "Build your World", bodyText: "Use colorful building blocks to make your piggy unique. Press Start now and fulfill your first dreams!" }
     ],
     tutorial: {
       step0: { title: 'Welcome to Sparify!', text: 'Let us show you how to fulfill your dreams with your digital piggy bank.' },
@@ -371,7 +390,17 @@ export const TRANSLATIONS: Record<Language, any> = {
       step4: { title: 'Navigation', text: 'Use the bottom bar to visit the shop, play games, or change settings.' }
     },
     learn: { sections: { basics: 'Basics', earning: 'Earning', spending: 'Spending', saving: 'Saving', safety: 'Safety' }, start: 'Start', streakFrozen: 'Streak Protected!' },
-    shop: { title: 'Shop', subtitle: 'Buy items', specials: 'Specials', owned: 'Owned', sectionAvatars: 'Avatars', sectionThemes: 'Themes', balance: 'Balance', discountActive: '50% Discount active!', couponAvailableTitle: 'Discount coupon available!', couponAvailableHintOn: 'Will be applied to your next purchase', couponAvailableHintOff: 'Click here to save 50%' }
+    shop: { title: 'Shop', subtitle: 'Buy items', specials: 'Specials', owned: 'Owned', sectionAvatars: 'Avatars', sectionThemes: 'Themes', balance: 'Balance', discountActive: '50% Discount active!', couponAvailableTitle: 'Discount coupon available!', couponAvailableHintOn: 'Will be applied to your next purchase', couponAvailableHintOff: 'Click here to save 50%' },
+    shopItems: {
+      item_discount_coupon: { label: '50% Discount Coupon', description: 'Halves the price of your next purchase!' },
+      item_streak_freeze: { label: 'Streak Freezer', description: 'Freezes your streak for 24h.' },
+      frame_wood: { label: 'Wood Frame', description: 'A rustic frame for your profile.' },
+      frame_silver: { label: 'Silver Frame', description: 'A sleek silver frame.' },
+      frame_gold: { label: 'Gold Frame', description: 'The ultimate status frame.' },
+      tag_saver_pro: { label: 'Saver Pro', description: 'Show everyone you control your money.' },
+      tag_money_magnet: { label: 'Money Magnet', description: 'You attract coins!' },
+      tag_future_boss: { label: 'Future Boss', description: 'Big dreams require discipline.' }
+    }
   },
   hr: { login: { slogan: 'Pametna štednja, veliki snovi.', title: 'Dobrodošli natrag' }, age: { title: 'Skoro spremni!' }, dashboard: { balance: 'Saldo' }, common: { next: 'Dalje' }, help: { appTutorial: 'Pomoć' }, tutorial: { step0: { title: 'Dobrodošli!' } }, learn: { start: 'Kreni' }, shop: { title: 'Trgovina' } },
   tr: { login: { slogan: 'Akıllı tasarruf, bükük hayaller.', title: 'Tekrar hoş geldiniz' }, age: { title: 'Neredeyse bitti!' }, dashboard: { balance: 'Bakiye' }, common: { next: 'İleri' }, help: { appTutorial: 'Yardım' }, tutorial: { step0: { title: 'Hoş geldiniz!' } }, learn: { start: 'Başla' }, shop: { title: 'Mağaza' } },
@@ -393,3 +422,4 @@ const deepMerge = (base: any, override: any): any => {
 
 // Use this everywhere instead of TRANSLATIONS[lang] directly (fallbacks for incomplete languages)
 export const getTranslations = (lang: Language) => deepMerge(TRANSLATIONS.de, TRANSLATIONS[lang] || {});
+

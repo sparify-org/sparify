@@ -12,6 +12,7 @@ import { LearnScreen } from './components/LearnScreen';
 import { ShopScreen } from './components/ShopScreen';
 import { BoxTutorialScreen } from './components/BoxTutorialScreen';
 import { Trophy, Loader2, RotateCcw, AlertTriangle, RefreshCw, PiggyBank as PigIcon, HelpCircle, BookOpen, Smartphone, Baby, Briefcase, ChevronRight, ChevronLeft, X, ArrowRight, Snowflake } from 'lucide-react';
+import { AppHelpModal } from './components/AppHelpModal';
 import { supabase } from './lib/supabaseClient';
 import { decryptAmount, encryptAmount } from './lib/crypto';
 
@@ -33,6 +34,7 @@ export default function App() {
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const [isLevelActive, setIsLevelActive] = useState(false);
   const [showAgeSelection, setShowAgeSelection] = useState(false);
+  const [showAppHelp, setShowAppHelp] = useState(false);
   const [selectedBirthdate, setSelectedBirthdate] = useState('');
 
   const dataLoadedRef = useRef(false);
@@ -146,9 +148,10 @@ export default function App() {
                 setUser(userData);
                 
                 // Only auto-open tutorial during initial load (not background refresh)
-                if (showLoadingSpinner && !userData.hasSeenTutorial && p.birthdate !== null) {
-                  setView('BOX_TUTORIAL');
-                }
+                // BUT: Don't do it here, let the view effect handle it
+                // if (showLoadingSpinner && !userData.hasSeenTutorial && p.birthdate !== null) {
+                //   setView('BOX_TUTORIAL');
+                // }
             }
         } else if (showLoadingSpinner) {
             // Logged in, but no profile row yet -> create it once.
@@ -217,12 +220,24 @@ export default function App() {
                 })))
             ]);
             decTxs.sort((a, b) => (b.rawDate?.getTime() || 0) - (a.rawDate?.getTime() || 0));
-            return {
-                id: pig.id, name: pig.name || 'Spardose', balance: decBalance, color: pig.color || 'blue',
-                role, connectedDate: new Date(pig.created_at).toLocaleDateString(), history: [],
-                transactions: decTxs, goals: decGoals, glitterEnabled: pig.glitter_enabled || false,
-                rainbowEnabled: pig.rainbow_enabled || false, safeLockEnabled: pig.safe_lock_enabled || false
-            };
+          // Build history from transactions: reconstruct running balance at each transaction date
+          const history: { day: string; amount: number }[] = [];
+          try {
+            let running = decBalance;
+            // decTxs currently sorted descending by rawDate
+            for (const tx of decTxs) {
+              history.push({ day: tx.date, amount: running });
+              running -= tx.amount;
+            }
+            history.reverse();
+          } catch (e) { /* fallback to empty history */ }
+
+          return {
+            id: pig.id, name: pig.name || 'Sparbox', balance: decBalance, color: pig.color || 'blue',
+            role, connectedDate: new Date(pig.created_at).toLocaleDateString(), history,
+            transactions: decTxs, goals: decGoals, glitterEnabled: pig.glitter_enabled || false,
+            rainbowEnabled: pig.rainbow_enabled || false, safeLockEnabled: pig.safe_lock_enabled || false
+          };
         };
 
         const owned = await Promise.all((ownedPigsRes.data || []).map(p => processPig(p, 'owner')));
@@ -261,8 +276,19 @@ export default function App() {
             const { data: { session } } = await supabase.auth.getSession();
             if (session && mounted) {
                 setUserId(session.user.id);
-                await loadUserData(session.user.id, session.user.email || '');
-                if (mounted && view !== 'BOX_TUTORIAL') setView('DASHBOARD');
+          // Guard loadUserData with a timeout to avoid infinite loading on network issues
+          const loadPromise = loadUserData(session.user.id, session.user.email || '');
+          const timeoutMs = 10000; // 10s
+          try {
+            await Promise.race([
+              loadPromise,
+              new Promise((_, reject) => setTimeout(() => reject(new Error('load-timeout')), timeoutMs))
+            ]);
+          } catch (e) {
+            console.warn('loadUserData timed out or failed:', e);
+            setInitError('Initialisierung hat zu lange gedauert. Bitte Seite neu laden.');
+            setLoading(false);
+          }
             } else if (mounted) {
                 setLoading(false);
             }
@@ -272,9 +298,17 @@ export default function App() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
         if (!mounted) return;
         if ((event === 'SIGNED_IN' || event === 'USER_UPDATED') && session) {
-            setUserId(session.user.id);
-            await loadUserData(session.user.id, session.user.email || '', false);
-            if (mounted && view !== 'BOX_TUTORIAL') setView('DASHBOARD');
+        setUserId(session.user.id);
+        // Also guard background sign-in load with timeout
+        try {
+          await Promise.race([
+            loadUserData(session.user.id, session.user.email || '', false),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('load-timeout')), 10000))
+          ]);
+          console.log('Background loadUserData completed');
+        } catch (e) {
+          console.warn('Background loadUserData timed out or failed:', e);
+        }
         } else if (event === 'SIGNED_OUT') {
             setView('LOGIN'); setUser(null); setUserId(null); setPiggyBanks([]);
         }
@@ -282,19 +316,98 @@ export default function App() {
     return () => { mounted = false; subscription.unsubscribe(); };
   }, [loadUserData]);
 
+  useEffect(() => {
+    // When user is loaded and view is still LOGIN, switch to DASHBOARD (or BOX_TUTORIAL if needed)
+    if (user && view === 'LOGIN') {
+      // If user has a birthdate and hasn't seen tutorial, show tutorial
+      if (user.birthdate && !user.hasSeenTutorial) {
+        setView('BOX_TUTORIAL');
+      } else {
+        // Otherwise show dashboard
+        setView('DASHBOARD');
+      }
+    }
+  }, [user]); // Depend on user object itself, not user?.id
+
+  // Flush pending profile updates that were stored locally while offline or without userId
+  useEffect(() => {
+    const flushPending = async () => {
+      if (!userId) return;
+      try {
+        const raw = localStorage.getItem('sparify_pending_profile');
+        if (!raw) return;
+        const pending = JSON.parse(raw) as User;
+        if (pending) {
+          await updateUserProfile(pending);
+        }
+      } catch (e) {
+        console.warn('Failed to flush pending profile:', e);
+      }
+    };
+    flushPending();
+  }, [userId]);
+
   const updateUserProfile = async (updatedUser: User) => {
       setUser(updatedUser);
       setLanguage(updatedUser.language); 
       lastProfileUpdateRef.current = Date.now();
 
-      if (!userId) return;
-      savePrefs(userId, {
+      // Ensure we have a userId; try to recover from session if missing
+      let uid = userId;
+      if (!uid) {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          uid = session?.user?.id || null;
+          if (uid) setUserId(uid);
+        } catch (e) {
+          console.warn('Could not obtain session while saving profile:', e);
+        }
+      }
+
+      // Always persist prefs locally if we don't have a server write
+      if (uid) {
+        savePrefs(uid, {
         activeFrames: updatedUser.activeFrames,
         activeTitles: updatedUser.activeTitles
-      });
+        });
+      } else {
+        try { localStorage.setItem('sparify_pending_profile', JSON.stringify(updatedUser)); } catch {}
+      }
+
       setIsSyncing(true);
-      try {
-          const { error } = await supabase.from('profiles').update({
+      const doUpdate = async () => {
+        try {
+          if (!uid) throw new Error('no-user-id');
+          const res = await supabase.from('profiles').update({
+            name: updatedUser.name,
+            avatar_id: updatedUser.avatarId,
+            coins: updatedUser.coins,
+            inventory: updatedUser.inventory,
+            completed_levels: updatedUser.completedLevels,
+            claimed_achievements: updatedUser.claimedAchievements,
+            active_specials: updatedUser.activeSpecials,
+            streak: updatedUser.streak,
+            last_completed_date: updatedUser.lastCompletedDate, 
+            streak_freeze_until: updatedUser.streakFreezeUntil,
+            language: updatedUser.language,
+            birthdate: updatedUser.birthdate,
+            has_seen_tutorial: updatedUser.hasSeenTutorial
+          }).eq('id', uid);
+
+          if (res.error) {
+            console.error('Supabase update error:', res.error, res);
+            throw res.error;
+          }
+          console.debug('Profile update saved:', res.data);
+          // Clear any pending local save now that it succeeded
+          try { localStorage.removeItem('sparify_pending_profile'); } catch {}
+        } catch (e) {
+          console.error('Update error:', e);
+          // Retry once after short delay
+          try {
+            await new Promise(r => setTimeout(r, 1200));
+            if (!uid) return;
+            const retryRes = await supabase.from('profiles').update({
               name: updatedUser.name,
               avatar_id: updatedUser.avatarId,
               coins: updatedUser.coins,
@@ -308,14 +421,18 @@ export default function App() {
               language: updatedUser.language,
               birthdate: updatedUser.birthdate,
               has_seen_tutorial: updatedUser.hasSeenTutorial
-          }).eq('id', userId);
-          
-          if (error) throw error;
-      } catch (e) { 
-          console.error("Update error:", e); 
-      } finally { 
-          setIsSyncing(false); 
-      }
+            }).eq('id', uid);
+            if (retryRes.error) console.error('Retry failed:', retryRes.error, retryRes);
+            else {
+              console.debug('Profile update retry saved:', retryRes.data);
+              try { localStorage.removeItem('sparify_pending_profile'); } catch {}
+            }
+          } catch (er) { console.error('Retry exception:', er); }
+        }
+      };
+
+      await doUpdate();
+      setIsSyncing(false);
   };
 
   const handleLogout = async () => {
@@ -391,6 +508,7 @@ export default function App() {
       <div className="h-screen w-full flex flex-col items-center justify-center bg-slate-50 text-slate-400 gap-6 font-bold p-6">
           <Loader2 className="animate-spin text-blue-500" size={64} />
           <p className="text-slate-600 text-xl">{loadingStatus}</p>
+          {initError && <p className="text-red-500">{initError}</p>}
       </div>
   );
 
@@ -417,20 +535,85 @@ export default function App() {
     />
   );
 
-  if (!user) return null;
+  // Fallback: if user exists but view isn't set properly, show dashboard
+  if (!user) {
+    return (
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-slate-50">
+        <p className="text-slate-600 text-lg font-bold">Nicht angemeldet</p>
+      </div>
+    );
+  }
 
   return (
     <div className={`flex h-screen font-sans overflow-hidden ${appMode === 'adult' ? 'bg-slate-100' : 'bg-slate-50'}`}>
+        {/* QR Scanner Overlay - appears on top of everything */}
+        {view === 'SCANNER' && (
+          <QRScanner
+            onClose={() => setView('DASHBOARD')}
+            onFound={async (code: string, isGuest: boolean) => {
+              try {
+                let result;
+                if (isGuest) {
+                  result = await supabase
+                    .from('piggy_bank_guests')
+                    .select('piggy_bank_id')
+                    .eq('access_code', code)
+                    .maybeSingle();
+                  
+                  if (result.data) {
+                    const { data: pig } = await supabase
+                      .from('piggy_banks')
+                      .select('*, transactions(*), goals(*)')
+                      .eq('id', result.data.piggy_bank_id)
+                      .maybeSingle();
+                    
+                    if (pig) {
+                      await supabase.from('piggy_bank_guests').insert({
+                        piggy_bank_id: pig.id,
+                        user_id: userId,
+                        access_code: code
+                      }).select();
+                      await loadUserData(userId!, user.email, false);
+                      setView('DASHBOARD');
+                      return { success: true };
+                    }
+                  }
+                  return { success: false, message: 'Gast-Code ungültig' };
+                } else {
+                  result = await supabase
+                    .from('piggy_banks')
+                    .select('*, transactions(*), goals(*)')
+                    .eq('qr_code', code)
+                    .eq('user_id', userId)
+                    .maybeSingle();
+                  
+                  if (result.data) {
+                    await loadUserData(userId!, user.email, false);
+                    setView('DASHBOARD');
+                    return { success: true };
+                  }
+                  return { success: false, message: 'Code nicht gefunden' };
+                }
+              } catch (err) {
+                console.error('Scanner error:', err);
+                return { success: false, message: 'Fehler beim Scannen' };
+              }
+            }}
+            accentColor={accentColor}
+            language={language}
+          />
+        )}
+
         <Sidebar 
-            currentView={view === 'DETAIL' || view === 'BOX_TUTORIAL' ? 'DASHBOARD' : view} 
-            onChangeView={(v) => { setView(v); setSelectedBankId(null); }} 
+            currentView={view === 'DETAIL' || view === 'BOX_TUTORIAL' || view === 'SCANNER' ? 'DASHBOARD' : view} 
+          onChangeView={(v) => { setView(v); setSelectedBankId(null); }} 
             accentColor={accentColor} 
             user={user} 
             onLogout={handleLogout} 
-            appMode={appMode} 
+            appMode={appMode}
         />
         <main className="flex-1 flex flex-col h-full relative md:ml-80">
-            {view !== 'LEARN' && view !== 'SHOP' && view !== 'DETAIL' && view !== 'BOX_TUTORIAL' && !isLevelActive && (
+            {view !== 'LEARN' && view !== 'SHOP' && view !== 'DETAIL' && view !== 'BOX_TUTORIAL' && view !== 'SCANNER' && !isLevelActive && (
                 <div className="px-6 pt-12 pb-4 flex justify-between items-center z-10 bg-slate-50/90 backdrop-blur-md sticky top-0 md:hidden">
                     <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 ${THEME_COLORS[accentColor]} rounded-xl flex items-center justify-center p-1.5 shadow-sm`}>
@@ -485,6 +668,7 @@ export default function App() {
                 setLanguage={setLanguage}
                 appMode={appMode}
                 onChangeView={(v) => setView(v)}
+                onOpenAppHelp={() => setShowAppHelp(true)}
               />
             )}
             
@@ -503,7 +687,7 @@ export default function App() {
               />
             )}
 
-            {!isLevelActive && view !== 'DETAIL' && view !== 'BOX_TUTORIAL' && <BottomNav currentView={view} onChangeView={setView} accentColor={accentColor} />}
+            {!isLevelActive && view !== 'DETAIL' && view !== 'BOX_TUTORIAL' && view !== 'SCANNER' && <BottomNav currentView={view} onChangeView={setView} accentColor={accentColor} />}
         </main>
 
         {showAgeSelection && (
@@ -517,6 +701,9 @@ export default function App() {
                     <button onClick={handleSaveAge} disabled={!selectedBirthdate} className="w-full bg-slate-900 text-white font-black py-5 rounded-[2rem] shadow-xl disabled:opacity-50 text-xl">{tAge.confirm}</button>
                 </div>
             </div>
+        )}
+        {showAppHelp && (
+          <AppHelpModal language={language} onClose={() => setShowAppHelp(false)} />
         )}
     </div>
   );

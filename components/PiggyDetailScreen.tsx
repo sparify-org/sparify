@@ -456,7 +456,7 @@ export const PiggyDetailScreen: React.FC<PiggyDetailScreenProps> = ({ bank, user
             <h3 className="text-2xl font-black text-slate-800 mb-4 leading-tight">Vorsicht! Hard Reset</h3>
             <div className="bg-red-50 p-4 rounded-2xl mb-8 text-left border border-red-100">
               <p className="text-sm font-bold text-red-600 leading-relaxed">
-                Dies wird dieses Sparschwein von deinem Konto trennen.
+                Dies wird diese Sparbox von deinem Konto trennen.
                 <br /><br />
                 • Alle Wünsche werden gelöscht
                 <br />
@@ -464,7 +464,7 @@ export const PiggyDetailScreen: React.FC<PiggyDetailScreenProps> = ({ bank, user
                 <br />
                 • Alle Zuschauer werden entfernt
                 <br /><br />
-                Das Schwein bleibt im System erhalten, ist aber für dich nicht mehr sichtbar.
+                Die Sparbox bleibt im System erhalten, ist aber für dich nicht mehr sichtbar.
               </p>
             </div>
             <div className="flex flex-col gap-3">

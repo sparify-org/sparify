@@ -1,8 +1,8 @@
 
 {
-  "name": "Sparify - Dein digitales Sparschwein",
+  "name": "Sparify - Deine digitale Sparbox",
   "short_name": "Sparify",
-  "description": "Verwalte deine physischen Sparschweine digital mit Echtzeit-Tracking und Sparzielen.",
+  "description": "Verwalte deine physischen Sparboxen digital mit Echtzeit-Tracking und Sparzielen.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8fafc",

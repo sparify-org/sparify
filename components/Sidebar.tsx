@@ -13,8 +13,8 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, accentColor, user, onLogout, appMode = 'kids' }) => {
   const t = getTranslations(user.language);
-  const activeFrame = user.activeSpecials.find(id => id.startsWith('frame_'));
-  const activeTagId = user.activeSpecials.find(id => id.startsWith('tag_'));
+  const activeFrame = user.activeFrames.find(id => id.startsWith('frame_'));
+  const activeTagId = user.activeTitles.find(id => id.startsWith('tag_'));
   const activeTag = activeTagId ? SPECIALS_DATABASE.find(item => item.id === activeTagId) : null;
   const isStreakFrozen = user.streakFreezeUntil ? new Date(user.streakFreezeUntil) > new Date() : false;
 
@@ -82,7 +82,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, acc
         <NavItem view="SETTINGS" icon={Settings} label={t.sidebar.settings} />
         
         <button
-            onClick={() => onChangeView('SCANNER')}
+          onClick={() => onChangeView('SCANNER')}
             className={`w-full flex items-center gap-4 px-4 py-3 transition-all mt-6 ${
                 appMode === 'adult' 
                 ? 'rounded-lg bg-slate-900 text-white hover:bg-slate-800' 
@@ -105,7 +105,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onChangeView, acc
                     {isStreakFrozen && <div title={t.sidebar.streakProtected} className="text-blue-400 animate-pulse"><Snowflake size={14} /></div>}
                 </div>
                 {activeTag ? (
-                    <p className={`text-[9px] font-black uppercase tracking-tighter truncate ${activeTag.color}`}>{activeTag.label.replace('Titel: ', '')}</p>
+                  <p className={`text-[9px] font-black uppercase tracking-tighter truncate ${activeTag.color}`}>{(getTranslations(user.language) as any).shopItems?.[activeTag.id]?.label || activeTag.label.replace('Titel: ', '')}</p>
                 ) : (
                     appMode === 'kids' && (
                         <div className="flex items-center gap-1 text-xs font-bold text-yellow-600">
