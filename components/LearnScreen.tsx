@@ -67,7 +67,11 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ language, accentColor,
                     { id: 'p_math_1', title: 'Zinseszins-Magie', type: 'quiz', icon: 'calc', position: 'center', contentId: 'c_adult_math_1', reward: 50, duration: '5 Min' },
                     { id: 'p_math_2', title: 'Inflation & Kaufkraft', type: 'lesson', icon: 'zap', position: 'left', contentId: 'c_adult_math_2', reward: 50, duration: '3 Min' },
                     { id: 'p_math_3', title: 'Optimale Sparquote', type: 'quiz', icon: 'calc', position: 'right', contentId: 'c_adult_math_3', reward: 75, duration: '5 Min' },
-                    { id: 'p_crash', title: 'Börsenpsychologie', type: 'lesson', icon: 'zap', position: 'center', contentId: 'c_adult_crash', reward: 100, duration: '6 Min' }
+                    { id: 'p_crash', title: 'Börsenpsychologie', type: 'lesson', icon: 'zap', position: 'center', contentId: 'c_adult_crash', reward: 100, duration: '6 Min' },
+                    { id: 'p_compound', title: 'Langfristiges Wachstum', type: 'quiz', icon: 'calc', position: 'left', contentId: 'c_adult_compound', reward: 120, duration: '7 Min' },
+                    { id: 'p_risk', title: 'Risiko-Management', type: 'lesson', icon: 'star', position: 'right', contentId: 'c_adult_risk', reward: 150, duration: '8 Min' },
+                    { id: 'p_divers', title: 'Diversifikation', type: 'quiz', icon: 'calc', position: 'center', contentId: 'c_adult_divers', reward: 180, duration: '9 Min' },
+                    { id: 'p_tax', title: 'Steuervorteile', type: 'lesson', icon: 'zap', position: 'left', contentId: 'c_adult_tax', reward: 200, duration: '10 Min' }
                 ]
             },
             {
@@ -77,7 +81,23 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ language, accentColor,
                 levels: [
                     { id: 'p_bud_1', title: '50-30-20 Meisterschaft', type: 'lesson', icon: 'star', position: 'left', contentId: 'c_adult_bud_1', reward: 50, duration: '4 Min' },
                     { id: 'p_inv_etf', title: 'ETF-Weltportfolio', type: 'lesson', icon: 'star', position: 'center', contentId: 'c_adult_etf', reward: 120, duration: '7 Min' },
-                    { id: 'p_inv_crypto', title: 'Krypto-Risiken', type: 'quiz', icon: 'zap', position: 'right', contentId: 'c_adult_crypto', reward: 150, duration: '8 Min' }
+                    { id: 'p_inv_crypto', title: 'Krypto-Risiken', type: 'quiz', icon: 'zap', position: 'right', contentId: 'c_adult_crypto', reward: 150, duration: '8 Min' },
+                    { id: 'p_inv_bonds', title: 'Anleihen verstehen', type: 'lesson', icon: 'star', position: 'center', contentId: 'c_adult_bonds', reward: 100, duration: '6 Min' },
+                    { id: 'p_inv_real', title: 'Immobilien-Investment', type: 'quiz', icon: 'calc', position: 'left', contentId: 'c_adult_real', reward: 180, duration: '9 Min' },
+                    { id: 'p_inv_passive', title: 'Passive vs Active', type: 'lesson', icon: 'zap', position: 'right', contentId: 'c_adult_passive', reward: 140, duration: '7 Min' },
+                    { id: 'p_inv_psych', title: 'Behavioral Finance', type: 'quiz', icon: 'calc', position: 'center', contentId: 'c_adult_psych', reward: 200, duration: '10 Min' }
+                ]
+            },
+            {
+                id: 'adult_advanced',
+                title: 'Fortgeschrittene Finanzen',
+                color: 'bg-emerald-700',
+                levels: [
+                    { id: 'p_adv_port', title: 'Portfolio-Optimierung', type: 'lesson', icon: 'star', position: 'center', contentId: 'c_adult_port', reward: 250, duration: '12 Min' },
+                    { id: 'p_adv_tax_strat', title: 'Steuerstrategien', type: 'quiz', icon: 'calc', position: 'left', contentId: 'c_adult_tax_strat', reward: 300, duration: '15 Min' },
+                    { id: 'p_adv_retire', title: 'Altersvorsorge-Planung', type: 'lesson', icon: 'zap', position: 'right', contentId: 'c_adult_retire', reward: 350, duration: '18 Min' },
+                    { id: 'p_adv_insure', title: 'Versicherungsstrategie', type: 'quiz', icon: 'calc', position: 'center', contentId: 'c_adult_insure', reward: 280, duration: '14 Min' },
+                    { id: 'p_adv_estate', title: 'Vermögensverwaltung', type: 'lesson', icon: 'star', position: 'left', contentId: 'c_adult_estate', reward: 400, duration: '20 Min' }
                 ]
             }
         ];
@@ -94,6 +114,9 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ language, accentColor,
               { id: 'l_base_3', title: 'Scheine', type: 'lesson', icon: 'star', position: 'right', contentId: 'c_basics_3', reward: 8, duration: '3 Min' },
               { id: 'l_base_4', title: 'Geld-Polizei', type: 'game', icon: 'game', position: 'center', contentId: 'c_basics_1', reward: 15, duration: '5 Min' },
               { id: 'l_base_5', title: 'Profi Quiz', type: 'quiz', icon: 'check', position: 'left', contentId: 'c_basics_quiz', reward: 10, duration: '4 Min' },
+              { id: 'l_base_6', title: 'Münzen sammeln', type: 'game', icon: 'game', position: 'right', contentId: 'c_basics_2', reward: 12, duration: '4 Min' },
+              { id: 'l_base_7', title: 'Geld zählen', type: 'quiz', icon: 'calc', position: 'center', contentId: 'c_basics_count', reward: 15, duration: '5 Min' },
+              { id: 'l_base_8', title: 'Währungen', type: 'lesson', icon: 'star', position: 'left', contentId: 'c_basics_currency', reward: 18, duration: '6 Min' }
           ]
       },
       {
@@ -106,6 +129,9 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ language, accentColor,
               { id: 'l_earn_3', title: 'Pfand & Flohmarkt', type: 'lesson', icon: 'star', position: 'left', contentId: 'c_earn_3', reward: 10, duration: '4 Min' },
               { id: 'l_earn_4', title: 'Flohmarkt Profi', type: 'game', icon: 'game', position: 'center', contentId: 'c_earn_1', reward: 20, duration: '6 Min' },
               { id: 'l_earn_5', title: 'Job Quiz', type: 'quiz', icon: 'check', position: 'right', contentId: 'c_earn_quiz', reward: 12, duration: '5 Min' },
+              { id: 'l_earn_6', title: 'Hilfsjobs', type: 'lesson', icon: 'star', position: 'left', contentId: 'c_earn_jobs', reward: 15, duration: '5 Min' },
+              { id: 'l_earn_7', title: 'Geld verdienen Spiele', type: 'game', icon: 'game', position: 'center', contentId: 'c_earn_games', reward: 25, duration: '7 Min' },
+              { id: 'l_earn_8', title: 'Unternehmertum', type: 'quiz', icon: 'calc', position: 'right', contentId: 'c_earn_business', reward: 20, duration: '6 Min' }
           ]
       },
       {
@@ -119,6 +145,9 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ language, accentColor,
               { id: 'l_spend_4', title: 'Supermarkt', type: 'game', icon: 'game', position: 'center', contentId: 'c_spend_1', reward: 15, duration: '5 Min' },
               { id: 'l_spend_ex1', title: 'Kiosk', type: 'game', icon: 'game', position: 'left', contentId: 'c_spend_1', reward: 10, duration: '2 Min' },
               { id: 'l_spend_ex2', title: 'Rechnen', type: 'quiz', icon: 'check', position: 'right', contentId: 'c_spend_2', reward: 10, duration: '3 Min' },
+              { id: 'l_spend_5', title: 'Budget planen', type: 'lesson', icon: 'star', position: 'center', contentId: 'c_spend_budget', reward: 18, duration: '6 Min' },
+              { id: 'l_spend_6', title: 'Sparen beim Einkaufen', type: 'quiz', icon: 'calc', position: 'left', contentId: 'c_spend_save', reward: 20, duration: '7 Min' },
+              { id: 'l_spend_7', title: 'Wunschliste', type: 'game', icon: 'game', position: 'right', contentId: 'c_spend_wishlist', reward: 22, duration: '8 Min' }
           ]
       },
       {
@@ -132,6 +161,9 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ language, accentColor,
               { id: 'l_save_4', title: 'Sparziele', type: 'lesson', icon: 'star', position: 'center', contentId: 'c_save_3', reward: 10, duration: '4 Min' },
               { id: 'l_save_5', title: 'Meister Quiz', type: 'quiz', icon: 'check', position: 'left', contentId: 'c_save_quiz', reward: 15, duration: '5 Min' },
               { id: 'l_save_ex1', title: 'Zinsen?', type: 'lesson', icon: 'star', position: 'right', contentId: 'c_save_1', reward: 10, duration: '3 Min' },
+              { id: 'l_save_6', title: 'Spar-Challenges', type: 'game', icon: 'game', position: 'center', contentId: 'c_save_challenge', reward: 25, duration: '8 Min' },
+              { id: 'l_save_7', title: 'Zukunft planen', type: 'quiz', icon: 'calc', position: 'left', contentId: 'c_save_future', reward: 20, duration: '6 Min' },
+              { id: 'l_save_8', title: 'Notgroschen', type: 'lesson', icon: 'star', position: 'right', contentId: 'c_save_emergency', reward: 18, duration: '5 Min' }
           ]
       },
       {
@@ -142,6 +174,20 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ language, accentColor,
               { id: 'l_safe_1', title: 'Angeber-Falle', type: 'lesson', icon: 'star', position: 'center', contentId: 'c_safe_1', reward: 8, duration: '3 Min' },
               { id: 'l_safe_2', title: 'Geheim-Code', type: 'lesson', icon: 'star', position: 'left', contentId: 'c_safe_2', reward: 10, duration: '3 Min' },
               { id: 'l_safe_ex1', title: 'Internet', type: 'lesson', icon: 'star', position: 'right', contentId: 'c_safe_1', reward: 8, duration: '3 Min' },
+              { id: 'l_safe_3', title: 'Sichere Passwörter', type: 'quiz', icon: 'check', position: 'center', contentId: 'c_safe_password', reward: 12, duration: '4 Min' },
+              { id: 'l_safe_4', title: 'Online-Sicherheit', type: 'lesson', icon: 'star', position: 'left', contentId: 'c_safe_online', reward: 15, duration: '5 Min' },
+              { id: 'l_safe_5', title: 'Betrug erkennen', type: 'game', icon: 'game', position: 'right', contentId: 'c_safe_scam', reward: 20, duration: '7 Min' }
+          ]
+      },
+      {
+          id: 'advanced',
+          title: 'Fortgeschrittene Themen',
+          color: 'bg-purple-600',
+          levels: [
+              { id: 'l_adv_1', title: 'Investieren lernen', type: 'lesson', icon: 'star', position: 'center', contentId: 'c_adv_invest', reward: 25, duration: '8 Min' },
+              { id: 'l_adv_2', title: 'Budget-App nutzen', type: 'quiz', icon: 'calc', position: 'left', contentId: 'c_adv_budget', reward: 20, duration: '6 Min' },
+              { id: 'l_adv_3', title: 'Zukunftsvision', type: 'lesson', icon: 'star', position: 'right', contentId: 'c_adv_future', reward: 30, duration: '10 Min' },
+              { id: 'l_adv_4', title: 'Finanzielle Ziele', type: 'game', icon: 'game', position: 'center', contentId: 'c_adv_goals', reward: 35, duration: '12 Min' }
           ]
       }
     ];
@@ -165,6 +211,22 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ language, accentColor,
         { type: 'slide', title: "Angst & Gier", text: "An der Börse gewinnen oft die, die ihre Emotionen kontrollieren können.", icon: <ShieldCheck size={64} className="text-blue-500" /> },
         { type: 'question', question: "Dein Portfolio fällt um 30%. Was ist historisch meistens die beste Reaktion?", options: [{ text: "Panikverkäufe", correct: false }, { text: "Ruhig bleiben / Nachkaufen", correct: true }], feedbackSuccess: "Korrekt. Wer im Tief verkauft, realisiert Verluste.", feedbackError: "Verkaufen im Crash ist oft der größte Fehler." }
       ],
+      'c_adult_compound': [
+        { type: 'slide', title: "Langfristiges Wachstum", text: "Die Macht der Zeit: Kleine Beträge können durch Zinseszins zu Vermögen werden.", icon: <TrendingUp size={64} className="text-green-500" /> },
+        { type: 'question', question: "Du sparst 100€/Monat bei 8% Rendite. Wie viel hast du nach 30 Jahren?", options: [{ text: "ca. 200.000 €", correct: true }, { text: "ca. 36.000 €", correct: false }], feedbackSuccess: "Richtig! Regelmäßiges Sparen + Zinseszins = Vermögen.", feedbackError: "Ohne Zinseszins wären es nur 36.000€. Mit Zinseszins viel mehr!" }
+      ],
+      'c_adult_risk': [
+        { type: 'slide', title: "Risiko-Management", text: "Nicht jedes Investment ist gleich riskant. Diversifikation reduziert Risiken.", icon: <ShieldAlert size={64} className="text-red-500" /> },
+        { type: 'question', question: "Was ist das größte Risiko bei Investments?", options: [{ text: "Verlust des gesamten Kapitals", correct: true }, { text: "Steuern", correct: false }], feedbackSuccess: "Genau. Totalverlust ist das Worst-Case-Szenario.", feedbackError: "Steuern sind wichtig, aber Totalverlust ist kritischer." }
+      ],
+      'c_adult_divers': [
+        { type: 'slide', title: "Diversifikation", text: "Lege nicht alle Eier in einen Korb. Streue dein Geld über verschiedene Anlagen.", icon: <PieChart size={64} className="text-purple-500" /> },
+        { type: 'question', question: "Du hast 10.000€. Wie viele verschiedene ETFs solltest du mindestens haben?", options: [{ text: "1-2", correct: false }, { text: "5-10", correct: true }], feedbackSuccess: "Richtig. Mehr Diversifikation = weniger Risiko.", feedbackError: "Ein ETF ist zu konzentriert. Streue breiter!" }
+      ],
+      'c_adult_tax': [
+        { type: 'slide', title: "Steuervorteile", text: "Steuern können Investments deutlich teurer machen. Nutze Freibeträge und Vorsorge.", icon: <Landmark size={64} className="text-slate-600" /> },
+        { type: 'question', question: "Was ist der Sparer-Pauschbetrag 2024?", options: [{ text: "1.000 €", correct: false }, { text: "1.000 € (Alleinstehend)", correct: true }], feedbackSuccess: "Richtig. 1.000€ für Alleinstehende, 2.000€ für Verheiratete.", feedbackError: "Der Betrag ist 1.000€ für Ledige." }
+      ],
       'c_adult_etf': [
         { type: 'slide', title: "Diversifikation", text: "Setze niemals alles auf eine Karte. Ein ETF streut dein Geld in hunderte Firmen.", icon: <PieChart size={64} className="text-indigo-500" /> },
         { type: 'question', question: "Was ist ein 'Welt-ETF' (z.B. MSCI World)?", options: [{ text: "Wette auf Gold", correct: false }, { text: "Investment in globale Wirtschaft", correct: true }], feedbackSuccess: "Genau. Du investierst in die Weltwirtschaft.", feedbackError: "Nein, es geht um Aktien weltweit." }
@@ -172,6 +234,42 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ language, accentColor,
       'c_adult_crypto': [
         { type: 'slide', title: "Volatilität", text: "Kryptowährungen können extrem steigen, aber auch auf Null fallen. Hohes Risiko!", icon: <Zap size={64} className="text-yellow-500" /> },
         { type: 'question', question: "Was ist ein 'Private Key'?", options: [{ text: "Ein Passwort für die Bank", correct: false }, { text: "Der einzige Zugang zu deinen Coins", correct: true }], feedbackSuccess: "Korrekt. 'Not your keys, not your coins'.", feedbackError: "Ohne Key ist dein Krypto-Geld für immer weg!" }
+      ],
+      'c_adult_bonds': [
+        { type: 'slide', title: "Anleihen verstehen", text: "Anleihen sind Schuldscheine von Staaten oder Unternehmen. Sie zahlen Zinsen und sind sicherer als Aktien.", icon: <Briefcase size={64} className="text-blue-600" /> },
+        { type: 'question', question: "Was passiert bei Insolvenz des Emittenten?", options: [{ text: "Du verlierst alles", correct: false }, { text: "Du stehst in der Gläubiger-Reihenfolge", correct: true }], feedbackSuccess: "Richtig. Anleihen haben Vorrang vor Aktien.", feedbackError: "Anleihen sind sicherer, aber nicht risikofrei." }
+      ],
+      'c_adult_real': [
+        { type: 'slide', title: "Immobilien-Investment", text: "Immobilien können gute Rendite bringen, aber erfordern viel Kapital und Management.", icon: <Landmark size={64} className="text-amber-600" /> },
+        { type: 'question', question: "Was ist die 'Cash-on-Cash-Rendite'?", options: [{ text: "Jährliche Mieteinnahmen / Investition", correct: true }, { text: "Wertsteigerung der Immobilie", correct: false }], feedbackSuccess: "Genau. Das ist die jährliche Rendite auf dein eingesetztes Kapital.", feedbackError: "Cash-on-Cash betrachtet nur die laufenden Einnahmen." }
+      ],
+      'c_adult_passive': [
+        { type: 'slide', title: "Passive vs Active", text: "Passive Investments (ETFs) schlagen meist aktive Fonds langfristig.", icon: <LineChart size={64} className="text-green-600" /> },
+        { type: 'question', question: "Warum sind ETFs oft besser?", options: [{ text: "Niedrigere Kosten", correct: true }, { text: "Höhere Risiken", correct: false }], feedbackSuccess: "Richtig. ETFs haben geringere Gebühren und schlagen die meisten Fonds.", feedbackError: "ETFs sind nicht riskanter, sondern effizienter." }
+      ],
+      'c_adult_psych': [
+        { type: 'slide', title: "Behavioral Finance", text: "Menschen treffen oft irrationale Finanzentscheidungen aufgrund von Emotionen.", icon: <ShieldCheck size={64} className="text-purple-600" /> },
+        { type: 'question', question: "Was ist 'Loss Aversion'?", options: [{ text: "Angst vor Verlusten", correct: true }, { text: "Freude an Gewinnen", correct: false }], feedbackSuccess: "Genau. Verluste schmerzen doppelt so stark wie Gewinne freuen.", feedbackError: "Loss Aversion erklärt, warum wir Verluste meiden." }
+      ],
+      'c_adult_port': [
+        { type: 'slide', title: "Portfolio-Optimierung", text: "Die richtige Mischung aus Risiko und Rendite ist entscheidend für deinen Erfolg.", icon: <PieChart size={64} className="text-emerald-600" /> },
+        { type: 'question', question: "Was ist die 'Efficient Frontier'?", options: [{ text: "Die beste Risiko-Rendite-Kombination", correct: true }, { text: "Die teuersten Investments", correct: false }], feedbackSuccess: "Richtig. Sie zeigt optimale Portfolios.", feedbackError: "Es geht um optimale Diversifikation." }
+      ],
+      'c_adult_tax_strat': [
+        { type: 'slide', title: "Steuerstrategien", text: "Intelligente Steuerplanung kann deine Rendite deutlich verbessern.", icon: <Calculator size={64} className="text-slate-700" /> },
+        { type: 'question', question: "Was ist 'Tax Loss Harvesting'?", options: [{ text: "Verlustverrechnung mit Gewinnen", correct: true }, { text: "Steuern sparen durch Spenden", correct: false }], feedbackSuccess: "Genau. Verluste können Steuern auf Gewinne reduzieren.", feedbackError: "Tax Loss Harvesting nutzt Verluste zur Steuerersparnis." }
+      ],
+      'c_adult_retire': [
+        { type: 'slide', title: "Altersvorsorge-Planung", text: "Früh anfangen ist das A und O für eine sorgenfreie Rente.", icon: <Clock size={64} className="text-indigo-600" /> },
+        { type: 'question', question: "Wie viel brauchst du im Ruhestand?", options: [{ text: "70-80% des letzten Einkommens", correct: true }, { text: "100% des letzten Einkommens", correct: false }], feedbackSuccess: "Richtig. Du brauchst weniger, da keine Arbeitskosten anfallen.", feedbackError: "Die Faustregel ist 70-80%." }
+      ],
+      'c_adult_insure': [
+        { type: 'slide', title: "Versicherungsstrategie", text: "Die richtige Absicherung schützt vor finanziellen Katastrophen.", icon: <Shield size={64} className="text-red-600" /> },
+        { type: 'question', question: "Was ist eine 'Berufsunfähigkeitsversicherung'?", options: [{ text: "Schutz bei Arbeitsunfähigkeit", correct: true }, { text: "Schutz bei Arbeitslosigkeit", correct: false }], feedbackSuccess: "Genau. Sie zahlt bei Berufsunfähigkeit.", feedbackError: "BU-Versicherung schützt vor Erwerbsunfähigkeit." }
+      ],
+      'c_adult_estate': [
+        { type: 'slide', title: "Vermögensverwaltung", text: "Professionelle Vermögensverwaltung kann komplexe Strategien umsetzen.", icon: <Briefcase size={64} className="text-gold-600" /> },
+        { type: 'question', question: "Was ist ein 'Family Office'?", options: [{ text: "Persönliche Vermögensverwaltung", correct: true }, { text: "Familien-Bankkonto", correct: false }], feedbackSuccess: "Richtig. Family Offices verwalten Vermögen für reiche Familien.", feedbackError: "Es ist eine professionelle Vermögensverwaltung." }
       ],
       'c_adult_bud_1': [
         { type: 'slide', title: "Finanzielle Freiheit", text: "Die 50-30-20 Regel hilft dir, ein Vermögen aufzubauen, ohne auf alles zu verzichten.", icon: <Landmark size={64} className="text-slate-800" /> }
@@ -184,19 +282,37 @@ export const LearnScreen: React.FC<LearnScreenProps> = ({ language, accentColor,
       'c_basics_2': [{ type: 'slide', title: "Euro & Cent", text: "Ein Euro hat 100 Cent.", icon: <Globe size={64} className="text-blue-500" /> }],
       'c_basics_3': [{ type: 'slide', title: "Scheine", text: "Große Beträge zahlen wir mit Scheinen.", icon: <Wallet size={64} className="text-green-600" /> }],
       'c_basics_quiz': [{ type: 'question', question: "Was nimmst du zum Bäcker?", options: [{ text: "Steine", correct: false }, { text: "Geld", correct: true }], feedbackSuccess: "Richtig.", feedbackError: "Nein!" }],
+      'c_basics_count': [{ type: 'question', question: "Wie viel sind 2€ + 3€?", options: [{ text: "5€", correct: true }, { text: "6€", correct: false }], feedbackSuccess: "Super!", feedbackError: "Zähle nach: 2+3=5." }],
+      'c_basics_currency': [{ type: 'slide', title: "Währungen", text: "In anderen Ländern gibt es andere Währungen wie Dollar oder Pfund.", icon: <Globe size={64} className="text-purple-500" /> }],
       'c_earn_1': [{ type: 'slide', title: "Arbeit", text: "Geld verdient man meist durch Arbeit.", icon: <Zap size={64} className="text-yellow-500" /> }],
       'c_earn_2': [{ type: 'slide', title: "Taschengeld", text: "Taschengeld ist zum Üben da.", icon: <Smile size={64} className="text-pink-500" /> }],
       'c_earn_3': [{ type: 'slide', title: "Pfand", text: "Leere Flaschen bringen Geld zurück!", icon: <RotateCcw size={64} className="text-blue-400" /> }],
       'c_earn_quiz': [{ type: 'question', question: "Woher kommt Geld?", options: [{ text: "Wasserhahn", correct: false }, { text: "Arbeit", correct: true }], feedbackSuccess: "Ja.", feedbackError: "Schön wärs!" }],
+      'c_earn_jobs': [{ type: 'slide', title: "Hilfsjobs", text: "Zeitung austragen, babysitten oder Gartenarbeit bringen extra Geld.", icon: <Briefcase size={64} className="text-green-600" /> }],
+      'c_earn_games': [{ type: 'slide', title: "Geld verdienen Spiele", text: "Manche Spiele belohnen dich mit echtem Geld oder Preisen.", icon: <Gamepad2 size={64} className="text-orange-500" /> }],
+      'c_earn_business': [{ type: 'question', question: "Was ist Unternehmertum?", options: [{ text: "Eigene Ideen verkaufen", correct: true }, { text: "Immer arbeiten", correct: false }], feedbackSuccess: "Genau!", feedbackError: "Es geht um Kreativität und Initiative." }],
       'c_spend_1': [{ type: 'slide', title: "Sparen", text: "Man kann nur ausgeben, was man hat.", icon: <X size={64} className="text-slate-500" /> }],
       'c_spend_2': [{ type: 'question', question: "Was ist wichtiger?", options: [{ text: "Essen", correct: true }, { text: "Spielzeug", correct: false }], feedbackSuccess: "Korrekt.", feedbackError: "Ohne Essen geht es nicht." }],
       'c_spend_3': [{ type: 'slide', title: "Preise", text: "Vergleiche Preise im Laden!", icon: <Tag size={64} className="text-red-500" /> }],
+      'c_spend_budget': [{ type: 'slide', title: "Budget planen", text: "Schreibe auf, wofür du Geld ausgibst, um nicht zu viel zu verbrauchen.", icon: <Calculator size={64} className="text-blue-500" /> }],
+      'c_spend_save': [{ type: 'question', question: "Wie sparst du beim Einkaufen?", options: [{ text: "Angebote nutzen", correct: true }, { text: "Alles teuer kaufen", correct: false }], feedbackSuccess: "Ja!", feedbackError: "Angebote helfen sparen." }],
+      'c_spend_wishlist': [{ type: 'slide', title: "Wunschliste", text: "Schreibe deine Wünsche auf und spare dafür.", icon: <Gift size={64} className="text-pink-500" /> }],
       'c_save_1': [{ type: 'slide', title: "Geduld", text: "Sparen braucht Zeit.", icon: <Hourglass size={64} className="text-blue-300" /> }],
     'c_save_2': [{ type: 'slide', title: "Die Sparbox", text: "Deine Sparbox bewacht dein Geld.", icon: <PiggyBank size={64} className="text-pink-500" /> }],
       'c_save_3': [{ type: 'slide', title: "Ziele", text: "Spare auf etwas Tolles!", icon: <Flag size={64} className="text-red-500" /> }],
       'c_save_quiz': [{ type: 'question', question: "Was ist Sparen?", options: [{ text: "Aufheben", correct: true }, { text: "Wegwerfen", correct: false }], feedbackSuccess: "Ja.", feedbackError: "Nein!" }],
+      'c_save_challenge': [{ type: 'slide', title: "Spar-Challenges", text: "Versuche 30 Tage lang täglich etwas zu sparen.", icon: <Trophy size={64} className="text-yellow-500" /> }],
+      'c_save_future': [{ type: 'question', question: "Warum sparen für die Zukunft?", options: [{ text: "Für Sicherheit", correct: true }, { text: "Für sofort Spaß", correct: false }], feedbackSuccess: "Richtig!", feedbackError: "Zukunft ist wichtig." }],
+      'c_save_emergency': [{ type: 'slide', title: "Notgroschen", text: "Spare für unerwartete Ausgaben.", icon: <ShieldAlert size={64} className="text-red-500" /> }],
       'c_safe_1': [{ type: 'slide', title: "Sicherheit", text: "Geld nicht jedem zeigen!", icon: <ShieldAlert size={64} className="text-slate-700" /> }],
-      'c_safe_2': [{ type: 'slide', title: "PIN", text: "Geheimzahlen sind geheim!", icon: <Lock size={64} className="text-blue-500" /> }]
+      'c_safe_2': [{ type: 'slide', title: "PIN", text: "Geheimzahlen sind geheim!", icon: <Lock size={64} className="text-blue-500" /> }],
+      'c_safe_password': [{ type: 'question', question: "Was macht ein gutes Passwort?", options: [{ text: "Lange und kompliziert", correct: true }, { text: "Kurz und einfach", correct: false }], feedbackSuccess: "Ja!", feedbackError: "Lange Passwörter sind sicherer." }],
+      'c_safe_online': [{ type: 'slide', title: "Online-Sicherheit", text: "Gib keine persönlichen Daten im Internet preis.", icon: <Globe size={64} className="text-green-500" /> }],
+      'c_safe_scam': [{ type: 'slide', title: "Betrug erkennen", text: "Wenn etwas zu gut klingt, ist es meist Betrug.", icon: <AlertTriangle size={64} className="text-orange-500" /> }],
+      'c_adv_invest': [{ type: 'slide', title: "Investieren lernen", text: "Investieren bedeutet, Geld arbeiten zu lassen.", icon: <TrendingUp size={64} className="text-green-500" /> }],
+      'c_adv_budget': [{ type: 'question', question: "Warum Budget-Apps nutzen?", options: [{ text: "Ausgaben tracken", correct: true }, { text: "Mehr ausgeben", correct: false }], feedbackSuccess: "Genau!", feedbackError: "Apps helfen beim Sparen." }],
+      'c_adv_future': [{ type: 'slide', title: "Zukunftsvision", text: "Denke an deine Träume und spare dafür.", icon: <Star size={64} className="text-purple-500" /> }],
+      'c_adv_goals': [{ type: 'slide', title: "Finanzielle Ziele", text: "Setze dir klare Ziele und verfolge sie.", icon: <Target size={64} className="text-red-500" /> }]
   };
 
   const getStatus = (levelId: string, sectionIndex: number, levelIndex: number) => {

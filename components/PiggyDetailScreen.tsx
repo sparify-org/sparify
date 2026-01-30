@@ -246,23 +246,29 @@ export const PiggyDetailScreen: React.FC<PiggyDetailScreenProps> = ({ bank, user
                                 <h3 className="font-bold text-slate-800 flex items-center gap-2"><Signal size={18} className="text-indigo-500" /> {t.history}</h3>
                             </div>
                             <div className="h-[200px]">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <AreaChart data={chartData}>
-                                        <defs>
-                                            <linearGradient id="adultColor" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1}/>
-                                                <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
-                                            </linearGradient>
-                                        </defs>
-                                        <XAxis dataKey="day" hide />
-                                        <YAxis hide domain={['auto', 'auto']} />
-                                        <Tooltip 
-                                            contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} 
-                                            formatter={(v: number) => [`€${v.toFixed(2)}`, 'Equity']}
-                                        />
-                                        <Area type="monotone" dataKey="amount" stroke="#6366f1" strokeWidth={3} fill="url(#adultColor)" />
-                                    </AreaChart>
-                                </ResponsiveContainer>
+                                {chartData.length > 0 ? (
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <AreaChart data={chartData}>
+                                            <defs>
+                                                <linearGradient id="adultColor" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1}/>
+                                                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                                                </linearGradient>
+                                            </defs>
+                                            <XAxis dataKey="day" hide />
+                                            <YAxis hide domain={['auto', 'auto']} />
+                                            <Tooltip 
+                                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} 
+                                                formatter={(v: number) => [`€${v.toFixed(2)}`, 'Equity']}
+                                            />
+                                            <Area type="monotone" dataKey="amount" stroke="#6366f1" strokeWidth={3} fill="url(#adultColor)" />
+                                        </AreaChart>
+                                    </ResponsiveContainer>
+                                ) : (
+                                    <div className="flex items-center justify-center h-full text-slate-400">
+                                        <p>Keine Transaktionen vorhanden</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -384,14 +390,20 @@ export const PiggyDetailScreen: React.FC<PiggyDetailScreenProps> = ({ bank, user
                   <h3 className="font-black text-slate-800 flex items-center gap-3 text-lg"><div className="bg-indigo-100 p-2 rounded-xl text-indigo-500"><Signal size={20} /></div> {t.history}</h3>
                </div>
                <div style={{ width: '100%', height: 140 }}>
-                 <ResponsiveContainer width="100%" height="100%">
-                   <AreaChart data={chartData}>
-                     <defs><linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#6366f1" stopOpacity={0.2}/><stop offset="95%" stopColor="#6366f1" stopOpacity={0}/></linearGradient></defs>
-                     <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 'bold' }} dy={10} />
-                     <Tooltip contentStyle={{ backgroundColor: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0', color: '#1e293b' }} itemStyle={{ color: '#6366f1', fontWeight: 'bold' }} formatter={(value: number) => [`€${value.toFixed(2)}`, 'Betrag']} />
-                     <Area type="monotone" dataKey="amount" stroke="#6366f1" strokeWidth={4} fillOpacity={1} fill="url(#colorValue)" />
-                   </AreaChart>
-                 </ResponsiveContainer>
+                 {chartData.length > 0 ? (
+                   <ResponsiveContainer width="100%" height="100%">
+                     <AreaChart data={chartData}>
+                       <defs><linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#6366f1" stopOpacity={0.2}/><stop offset="95%" stopColor="#6366f1" stopOpacity={0}/></linearGradient></defs>
+                       <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 'bold' }} dy={10} />
+                       <Tooltip contentStyle={{ backgroundColor: '#fff', borderRadius: '16px', border: '1px solid #e2e8f0', color: '#1e293b' }} itemStyle={{ color: '#6366f1', fontWeight: 'bold' }} formatter={(value: number) => [`€${value.toFixed(2)}`, 'Betrag']} />
+                       <Area type="monotone" dataKey="amount" stroke="#6366f1" strokeWidth={4} fillOpacity={1} fill="url(#colorValue)" />
+                     </AreaChart>
+                   </ResponsiveContainer>
+                 ) : (
+                   <div className="flex items-center justify-center h-full text-slate-400">
+                     <p>Keine Transaktionen vorhanden</p>
+                   </div>
+                 )}
                </div>
             </div>
           </div>
