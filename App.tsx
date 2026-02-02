@@ -11,10 +11,11 @@ import { PiggyDetailScreen } from './components/PiggyDetailScreen';
 import { LearnScreen } from './components/LearnScreen';
 import { ShopScreen } from './components/ShopScreen';
 import { BoxTutorialScreen } from './components/BoxTutorialScreen';
-import { Trophy, Loader2, RotateCcw, AlertTriangle, RefreshCw, PiggyBank as PigIcon, HelpCircle, BookOpen, Smartphone, Baby, Briefcase, ChevronRight, ChevronLeft, X, ArrowRight, Snowflake } from 'lucide-react';
+import { Trophy, RotateCcw, AlertTriangle, RefreshCw, PiggyBank as PigIcon, HelpCircle, BookOpen, Smartphone, Baby, Briefcase, ChevronRight, ChevronLeft, X, ArrowRight, Snowflake } from 'lucide-react';
 import { AppHelpModal } from './components/AppHelpModal';
 import { supabase } from './lib/supabaseClient';
 import { decryptAmount, encryptAmount } from './lib/crypto';
+import { LoadingSkeleton } from './components/LoadingSkeleton';
 
 export default function App() {
   const [view, setView] = useState<ViewState>('LOGIN');
@@ -521,13 +522,7 @@ export default function App() {
       });
   };
 
-  if (loading) return (
-      <div className="h-screen w-full flex flex-col items-center justify-center bg-slate-50 text-slate-400 gap-6 font-bold p-6">
-          <Loader2 className="animate-spin text-blue-500" size={64} />
-          <p className="text-slate-600 text-xl">{loadingStatus}</p>
-          {initError && <p className="text-red-500">{initError}</p>}
-      </div>
-  );
+  if (loading) return <LoadingSkeleton />;
 
   if (view === 'LOGIN' && !user) return (
     <LoginScreen
