@@ -47,22 +47,23 @@ export default function App() {
       userRef.current = user;
   }, [user]);
 
-  const tAge = getTranslations(language).age;
+  const tAge = useMemo(() => getTranslations(language).age, [language]);
 
   const getPrefsKey = (uid: string) => `sparify_prefs_${uid}`;
-  const loadPrefs = (uid: string): Pick<User, 'activeFrames' | 'activeTitles'> => {
+  const loadPrefs = (uid: string): { activeFrames: string[], activeTitles: string[], theme?: ThemeColor } => {
     try {
       const raw = localStorage.getItem(getPrefsKey(uid));
       const parsed = raw ? JSON.parse(raw) : {};
       return {
         activeFrames: Array.isArray(parsed.activeFrames) ? parsed.activeFrames : [],
-        activeTitles: Array.isArray(parsed.activeTitles) ? parsed.activeTitles : []
+        activeTitles: Array.isArray(parsed.activeTitles) ? parsed.activeTitles : [],
+        theme: parsed.theme
       };
     } catch {
       return { activeFrames: [], activeTitles: [] };
     }
   };
-  const savePrefs = (uid: string, prefs: Pick<User, 'activeFrames' | 'activeTitles'>) => {
+  const savePrefs = (uid: string, prefs: { activeFrames: string[], activeTitles: string[], theme?: ThemeColor }) => {
     try { localStorage.setItem(getPrefsKey(uid), JSON.stringify(prefs)); } catch {}
   };
 
@@ -147,6 +148,7 @@ export default function App() {
                     activeTitles: prefs.activeTitles
                 };
                 setUser(userData);
+                if (prefs.theme) setAccentColor(prefs.theme);
                 
                 // Only auto-open tutorial during initial load (not background refresh)
                 // BUT: Don't do it here, let the view effect handle it
@@ -197,6 +199,7 @@ export default function App() {
               activeFrames: [],
               activeTitles: []
             });
+            if (prefs.theme) setAccentColor(prefs.theme);
             setShowAgeSelection(true);
         }
 
@@ -225,10 +228,18 @@ export default function App() {
           const history: { day: string; amount: number }[] = [];
           try {
             let running = decBalance;
-            // decTxs currently sorted descending by rawDate
+            // decTxs currently sorted descending by rawDate (newest first)
+            // To get history: start with current balance, iterate backwards in time
+            // If tx was deposit (+), previous balance was running - amount
+            // If tx was withdrawal (-), previous balance was running + amount
             for (const tx of decTxs) {
               history.push({ day: tx.date, amount: running });
-              running -= tx.amount;
+              if (tx.type === 'deposit') {
+                  running -= tx.amount;
+              } else {
+                  // withdrawal or transfer (out)
+                  running += Math.abs(tx.amount);
+              }
             }
             history.reverse();
           } catch (e) { /* fallback to empty history */ }
@@ -358,7 +369,8 @@ export default function App() {
       if (uid) {
         savePrefs(uid, {
         activeFrames: updatedUser.activeFrames,
-        activeTitles: updatedUser.activeTitles
+        activeTitles: updatedUser.activeTitles,
+        theme: accentColor
         });
       } else {
         try { localStorage.setItem('sparify_pending_profile', JSON.stringify(updatedUser)); } catch {}
@@ -496,10 +508,30 @@ export default function App() {
       const isNew = !freshUser.completedLevels.includes(id);
       
       let newStreak = freshUser.streak;
+      const isFrozen = freshUser.streakFreezeUntil ? new Date(freshUser.streakFreezeUntil) > new Date() : false;
+
+      // Logic:
+      // If completed yesterday -> streak + 1
+      // If completed today -> streak stays same (already counted for today? usually implies we track if 'streak_updated_today' but here we just check date)
+      // Actually if lastCompletedDate == today, we don't increment.
+      
       if (freshUser.lastCompletedDate === yesterday) {
           newStreak += 1;
       } else if (freshUser.lastCompletedDate !== today) {
-          newStreak = 1;
+          // Missed a day or more
+          if (isFrozen) {
+              // Frozen: keep streak, don't reset. usage of freeze usually consumes it or checks expiration
+              // User has freeze active until future date. Streak survives.
+              // Just don't increment, but don't reset.
+              // If it's the first time playing today after a freeze gap, we might want to increment?
+              // Simple rule: If freeze active, treat 'missed days' as 'attended', so effectively we continue from where we left off.
+              // But we can only increment by 1 max per day. 
+              // So if lastCompletedDate was 5 days ago but freeze covers it, we just add 1 for today? 
+              // Or just keep it? Let's assume we just keep it and add 1 for today.
+              newStreak += 1;
+          } else {
+             newStreak = 1;
+          }
       }
 
       updateUserProfile({
@@ -632,8 +664,16 @@ export default function App() {
                             )}
                         </div>
                     </div>
-                    <div onClick={() => setView('SETTINGS')} className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-md cursor-pointer">
+                    <div onClick={() => setView('SETTINGS')} className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-md cursor-pointer relative">
                         <img src={AVATARS[user.avatarId || 0]} className="w-full h-full object-cover" />
+                        {user.activeFrames.length > 0 && (
+                            <div className="absolute inset-0 pointer-events-none">
+                                {/* Frame Overlay Logic - Simple mapping for known frames */}
+                                {user.activeFrames.includes('frame_wood') && <div className="absolute inset-0 border-[3px] border-amber-700 rounded-full" />}
+                                {user.activeFrames.includes('frame_silver') && <div className="absolute inset-0 border-[3px] border-slate-300 rounded-full shadow-[0_0_10px_rgba(203,213,225,0.8)]" />}
+                                {user.activeFrames.includes('frame_gold') && <div className="absolute inset-0 border-[3px] border-yellow-400 rounded-full shadow-[0_0_10px_rgba(250,204,21,0.8)]" />}
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
@@ -668,7 +708,16 @@ export default function App() {
                 user={user}
                 onUpdateUser={updateUserProfile}
                 accentColor={accentColor}
-                onUpdateAccent={setAccentColor}
+                onUpdateAccent={(color) => {
+                    setAccentColor(color);
+                    if (userId) {
+                        savePrefs(userId, { 
+                            activeFrames: user?.activeFrames || [], 
+                            activeTitles: user?.activeTitles || [], 
+                            theme: color 
+                        });
+                    }
+                }}
                 onLogout={handleLogout}
                 language={language}
                 setLanguage={setLanguage}
