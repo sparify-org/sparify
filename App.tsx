@@ -39,6 +39,7 @@ export default function App() {
   const [showAppHelp, setShowAppHelp] = useState(false);
   const [selectedBirthdate, setSelectedBirthdate] = useState('');
   const [tutorialBeforeView, setTutorialBeforeView] = useState<ViewState | null>(null);
+  const [showSpotlight, setShowSpotlight] = useState(false);
 
   const dataLoadedRef = useRef(false);
   const isRefreshingRef = useRef(false);
@@ -730,7 +731,15 @@ export default function App() {
 
       <Sidebar
         currentView={view === 'DETAIL' || view === 'BOX_TUTORIAL' || view === 'SCANNER' ? 'DASHBOARD' : view}
-        onChangeView={(v) => { setView(v); setSelectedBankId(null); }}
+        onChangeView={(v) => {
+          if (v === 'SPOTLIGHT_TUTORIAL') {
+            setShowSpotlight(true);
+            if (view === 'LOGIN' || view === 'BOX_TUTORIAL') setView('DASHBOARD');
+          } else {
+            setView(v);
+            setSelectedBankId(null);
+          }
+        }}
         accentColor={accentColor}
         user={user}
         onLogout={handleLogout}
@@ -813,7 +822,13 @@ export default function App() {
             language={language}
             setLanguage={setLanguage}
             appMode={appMode}
-            onChangeView={(v) => setView(v)}
+            onChangeView={(v) => {
+              if (v === 'SPOTLIGHT_TUTORIAL') {
+                setShowSpotlight(true);
+              } else {
+                setView(v);
+              }
+            }}
             onOpenAppHelp={() => setShowAppHelp(true)}
           />
         )}
@@ -834,32 +849,46 @@ export default function App() {
         )}
 
         {view === 'SPOTLIGHT_TUTORIAL' && (
-          <SpotlightTutorial
-            steps={tutorialSteps}
-            language={language}
-            currentScreen={selectedBankId ? 'DETAIL' : 'DASHBOARD'}
-            onNavigate={(screen) => {
-              if (screen === 'DETAIL' && piggyBanks.length > 0 && !selectedBankId) {
-                setSelectedBankId(piggyBanks[0].id);
-                setView('DETAIL');
-              } else if (screen === 'DASHBOARD') {
-                setSelectedBankId(null);
-                setView('DASHBOARD');
-              }
-            }}
-            onComplete={() => {
-              setView(tutorialBeforeView || 'DASHBOARD');
-              setTutorialBeforeView(null);
-            }}
-            onSkip={() => {
-              setView(tutorialBeforeView || 'DASHBOARD');
-              setTutorialBeforeView(null);
-            }}
-          />
+          <div className="hidden" /> // Replaced by overlay below
         )}
 
-        {!isLevelActive && view !== 'DETAIL' && view !== 'BOX_TUTORIAL' && view !== 'SCANNER' && view !== 'SPOTLIGHT_TUTORIAL' && <BottomNav currentView={view} onChangeView={setView} accentColor={accentColor} />}
+        {!isLevelActive && view !== 'DETAIL' && view !== 'BOX_TUTORIAL' && view !== 'SCANNER' && view !== 'SPOTLIGHT_TUTORIAL' && (
+          <BottomNav
+            currentView={view}
+            onChangeView={(v) => {
+              if (v === 'SPOTLIGHT_TUTORIAL') {
+                setShowSpotlight(true);
+              } else {
+                setView(v);
+              }
+            }}
+            accentColor={accentColor}
+          />
+        )}
       </main>
+
+      {showSpotlight && (
+        <SpotlightTutorial
+          steps={tutorialSteps}
+          language={language}
+          currentScreen={selectedBankId ? 'DETAIL' : 'DASHBOARD'}
+          onNavigate={(screen) => {
+            if (screen === 'DETAIL' && piggyBanks.length > 0 && !selectedBankId) {
+              setSelectedBankId(piggyBanks[0].id);
+              setView('DETAIL');
+            } else if (screen === 'DASHBOARD') {
+              setSelectedBankId(null);
+              setView('DASHBOARD');
+            }
+          }}
+          onComplete={() => {
+            setShowSpotlight(false);
+          }}
+          onSkip={() => {
+            setShowSpotlight(false);
+          }}
+        />
+      )}
 
       {showAgeSelection && (
         <div className="fixed inset-0 z-[200] bg-slate-900/90 backdrop-blur-xl flex items-center justify-center p-6">
