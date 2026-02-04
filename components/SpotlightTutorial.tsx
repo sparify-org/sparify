@@ -140,8 +140,8 @@ export const SpotlightTutorial: React.FC<SpotlightTutorialProps> = ({
 
     return (
         <div className="fixed inset-0 z-[9999] pointer-events-auto">
-            {/* Backdrop with blur - reduced blur if no spotlight to keep content readable */}
-            <div className={`absolute inset-0 bg-black/60 transition-all duration-500 ${elementRect ? 'backdrop-blur-sm' : 'backdrop-blur-[1px]'}`} />
+            {/* Backdrop WITHOUT blur to keep content readable */}
+            <div className={`absolute inset-0 bg-black/60 transition-all duration-500`} />
 
             {/* Spotlight cutout effect using SVG mask */}
             {elementRect && (
@@ -151,10 +151,10 @@ export const SpotlightTutorial: React.FC<SpotlightTutorialProps> = ({
                             <mask id="spotlight-mask">
                                 <rect x="0" y="0" width="100%" height="100%" fill="white" />
                                 <rect
-                                    x={elementRect.left - 8}
-                                    y={elementRect.top - 8}
-                                    width={elementRect.width + 16}
-                                    height={elementRect.height + 16}
+                                    x={elementRect.left - 12}
+                                    y={elementRect.top - 12}
+                                    width={elementRect.width + 24}
+                                    height={elementRect.height + 24}
                                     rx="16"
                                     fill="black"
                                 />
@@ -174,12 +174,12 @@ export const SpotlightTutorial: React.FC<SpotlightTutorialProps> = ({
                     <div
                         className="absolute pointer-events-none transition-all duration-300 ease-out"
                         style={{
-                            left: elementRect.left - 8,
-                            top: elementRect.top - 8,
-                            width: elementRect.width + 16,
-                            height: elementRect.height + 16,
-                            border: '3px solid rgba(99, 102, 241, 0.8)',
-                            borderRadius: '16px',
+                            left: elementRect.left - 12,
+                            top: elementRect.top - 12,
+                            width: elementRect.width + 24,
+                            height: elementRect.height + 24,
+                            border: '4px solid rgba(99, 102, 241, 0.8)',
+                            borderRadius: '20px',
                             boxShadow: '0 0 0 4px rgba(99, 102, 241, 0.2), 0 0 30px rgba(99, 102, 241, 0.4)',
                             animation: 'pulse 2s infinite'
                         }}

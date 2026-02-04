@@ -340,7 +340,7 @@ export const PiggyDetailScreen: React.FC<PiggyDetailScreenProps> = ({ bank, user
 
     return (
         <div className="flex-1 flex flex-col h-screen relative bg-slate-50 md:flex-row md:overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 p-6 pt-12 md:pt-6 flex justify-between items-start z-50 pointer-events-none max-w-6xl mx-auto w-full md:relative md:w-auto md:h-0">
+            <div className="absolute top-0 left-0 right-0 p-6 pt-16 md:pt-6 flex justify-between items-start z-50 pointer-events-none max-w-6xl mx-auto w-full md:relative md:w-auto md:h-0">
                 <button onClick={onBack} className="pointer-events-auto w-12 h-12 bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-2xl flex items-center justify-center text-white transition-all active:scale-95 shadow-lg ring-1 ring-white/30 md:bg-white md:text-slate-500 md:shadow-md md:hover:bg-slate-50 md:ring-0 md:fixed md:top-6 md:right-24 md:z-[60]">
                     <ArrowLeft size={24} strokeWidth={3} />
                 </button>
@@ -350,7 +350,7 @@ export const PiggyDetailScreen: React.FC<PiggyDetailScreenProps> = ({ bank, user
             </div>
 
             <div className="flex-1 overflow-y-auto no-scrollbar p-6 flex flex-col md:flex-row gap-8 max-w-6xl mx-auto w-full">
-                <div className="md:w-1/2 md:flex md:flex-col md:gap-6">
+                <div className="w-full md:w-1/2 md:flex md:flex-col md:gap-6">
                     <div id="tutorial-piggy-balance" className={`relative ${bank.rainbowEnabled ? 'animate-rainbow-bg' : THEME_COLORS[bank.color]} rounded-b-[3.5rem] md:rounded-[2.5rem] pt-28 pb-12 px-6 shadow-2xl shadow-slate-300/50 z-10 transition-colors duration-500 overflow-hidden md:pt-12 md:flex-1 md:flex md:flex-col md:justify-center`}>
                         {bank.glitterEnabled && (
                             <div className="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay animate-glitter-bg z-0"
@@ -408,7 +408,7 @@ export const PiggyDetailScreen: React.FC<PiggyDetailScreenProps> = ({ bank, user
                     </div>
                 </div>
 
-                <div className="px-6 md:px-0 pb-40 md:pb-0 md:w-1/2 md:flex md:flex-col md:gap-6 md:overflow-y-auto md:no-scrollbar relative z-20">
+                <div className="w-full px-6 md:px-0 pb-40 md:pb-0 md:w-1/2 md:flex md:flex-col md:gap-6 md:overflow-y-auto md:no-scrollbar relative z-20">
                     <div id="tutorial-piggy-goals" className="mb-6 md:mb-0">
                         <h3 className="font-black text-slate-800 mb-5 ml-4 text-xl flex items-center gap-2"><Target size={20} className="text-emerald-500" /> {t.goals}</h3>
                         {distributedGoals.length > 0 ? (
