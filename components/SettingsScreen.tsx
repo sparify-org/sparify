@@ -306,12 +306,12 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           <h3 className="font-bold text-slate-800">{tHelp.appTutorial}</h3>
         </div>
         <button
-          onClick={() => onChangeView?.('BOX_TUTORIAL')}
+          onClick={() => onChangeView?.('SPOTLIGHT_TUTORIAL')}
           className="w-full p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between group active:scale-95 transition-all"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-amber-500 group-hover:scale-110 transition-transform"><Info size={20} /></div>
-            <span className="font-bold text-slate-800">{tHelp.boxTutorial}</span>
+            <span className="font-bold text-slate-800">{tHelp.appTutorial}</span>
           </div>
           {/* Fix: Added missing ChevronRight component */}
           <ChevronRight size={18} className="text-slate-300" />

@@ -11,6 +11,7 @@ import { PiggyDetailScreen } from './components/PiggyDetailScreen';
 import { LearnScreen } from './components/LearnScreen';
 import { ShopScreen } from './components/ShopScreen';
 import { BoxTutorialScreen } from './components/BoxTutorialScreen';
+import { SpotlightTutorial, TutorialStep } from './components/SpotlightTutorial';
 import { Trophy, RotateCcw, AlertTriangle, RefreshCw, PiggyBank as PigIcon, HelpCircle, BookOpen, Smartphone, Baby, Briefcase, ChevronRight, ChevronLeft, X, ArrowRight, Snowflake } from 'lucide-react';
 import { AppHelpModal } from './components/AppHelpModal';
 import { supabase } from './lib/supabaseClient';
@@ -37,6 +38,7 @@ export default function App() {
   const [showAgeSelection, setShowAgeSelection] = useState(false);
   const [showAppHelp, setShowAppHelp] = useState(false);
   const [selectedBirthdate, setSelectedBirthdate] = useState('');
+  const [tutorialBeforeView, setTutorialBeforeView] = useState<ViewState | null>(null);
 
   const dataLoadedRef = useRef(false);
   const isRefreshingRef = useRef(false);
@@ -579,6 +581,52 @@ export default function App() {
     });
   };
 
+  // Tutorial steps definition
+  const tutorialSteps: TutorialStep[] = [
+    {
+      id: 'balance',
+      elementId: 'tutorial-balance',
+      title: 'Dein Gesamtguthaben',
+      description: 'Hier siehst du, wie viel Geld du insgesamt in all deinen Sparboxen gespart hast.',
+      screen: 'DASHBOARD'
+    },
+    {
+      id: 'piggy-list',
+      elementId: 'tutorial-piggy-list',
+      title: 'Deine Sparboxen',
+      description: 'In dieser Liste findest du alle deine Sparboxen. Tippe auf eine, um Details zu sehen.',
+      screen: 'DASHBOARD'
+    },
+    {
+      id: 'connect',
+      elementId: 'tutorial-connect',
+      title: 'Neue Sparbox hinzufügen',
+      description: 'Tippe hier, um eine neue Sparbox zu scannen oder per Code hinzuzufügen.',
+      screen: 'DASHBOARD'
+    },
+    {
+      id: 'piggy-balance',
+      elementId: 'tutorial-piggy-balance',
+      title: 'Sparbox-Guthaben',
+      description: 'Hier siehst du das Guthaben dieser Sparbox. Der Betrag wird in Echtzeit aktualisiert.',
+      screen: 'DETAIL'
+    },
+    {
+      id: 'piggy-goals',
+      elementId: 'tutorial-piggy-goals',
+      title: 'Deine Wünsche',
+      description: 'Erstelle Wünsche und verfolge deinen Fortschritt. Wenn du genug gespart hast, kannst du sie einlösen!',
+      screen: 'DETAIL'
+    },
+    {
+      id: 'piggy-transactions',
+      elementId: 'tutorial-piggy-transactions',
+      title: 'Transaktionen',
+      description: 'Hier siehst du alle Ein- und Auszahlungen dieser Sparbox.',
+      screen: 'DETAIL'
+    }
+  ];
+
   if (loading) return <LoadingSkeleton />;
 
   if (view === 'LOGIN' && !user) return (
@@ -778,7 +826,32 @@ export default function App() {
           />
         )}
 
-        {!isLevelActive && view !== 'DETAIL' && view !== 'BOX_TUTORIAL' && view !== 'SCANNER' && <BottomNav currentView={view} onChangeView={setView} accentColor={accentColor} />}
+        {view === 'SPOTLIGHT_TUTORIAL' && (
+          <SpotlightTutorial
+            steps={tutorialSteps}
+            language={language}
+            currentScreen={selectedBankId ? 'DETAIL' : 'DASHBOARD'}
+            onNavigate={(screen) => {
+              if (screen === 'DETAIL' && piggyBanks.length > 0 && !selectedBankId) {
+                setSelectedBankId(piggyBanks[0].id);
+                setView('DETAIL');
+              } else if (screen === 'DASHBOARD') {
+                setSelectedBankId(null);
+                setView('DASHBOARD');
+              }
+            }}
+            onComplete={() => {
+              setView(tutorialBeforeView || 'DASHBOARD');
+              setTutorialBeforeView(null);
+            }}
+            onSkip={() => {
+              setView(tutorialBeforeView || 'DASHBOARD');
+              setTutorialBeforeView(null);
+            }}
+          />
+        )}
+
+        {!isLevelActive && view !== 'DETAIL' && view !== 'BOX_TUTORIAL' && view !== 'SCANNER' && view !== 'SPOTLIGHT_TUTORIAL' && <BottomNav currentView={view} onChangeView={setView} accentColor={accentColor} />}
       </main>
 
       {showAgeSelection && (

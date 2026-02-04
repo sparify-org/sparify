@@ -242,7 +242,8 @@ export type ViewState =
   | 'SETTINGS'
   | 'SCANNER'
   | 'DETAIL'
-  | 'BOX_TUTORIAL';
+  | 'BOX_TUTORIAL'
+  | 'SPOTLIGHT_TUTORIAL';
 
 export const AVATARS = [
   'https://bejlqwebcujfklavoecm.supabase.co/storage/v1/object/public/Profile%20Pictures/avatar_01.png',
